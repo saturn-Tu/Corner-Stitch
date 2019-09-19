@@ -43,7 +43,8 @@ bool CornerStitchPlane::TileCreate(Rectangle tile) {
     Tile *now_rec = this->PointFinding(tile.rightTop);
 }
 
-void CornerStitchPlane::SplitTile_H(Tile& target, Rectangle& tile) {
-   if ( tile.rightTop.y == target.rightTop.y ) return;
-   //Rectangle *new_tile = new Tile();
+void CornerStitchPlane::SplitTile_H(Tile& ori, Rectangle& tile) {
+   if ( tile.rightTop.y == ori.rightTop.y ) return;
+   Rectangle *new_tile = new Tile(tile.leftBottom.x, tile.rightTop.y, tile.rightTop.x, ori.rightTop.y, 0);
+   
 }

@@ -10,7 +10,7 @@ public:
     bool AreaSearch(Rectangle area);
     bool TileCreate(Rectangle tile);
     bool TileDelete(Rectangle tile);
-    void SplitTile_H(Tile& target, Rectangle& tile);
+    void SplitTile_H(Tile& ori, Rectangle& tile);
 };
 
 
