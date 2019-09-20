@@ -5,6 +5,7 @@
 
 class CornerStitchPlane{
 public:
+    vector <Rectangle> rec_list;
     Tile *start_tile;
     Tile* PointFinding(Point target);    
     bool AreaSearch(Rectangle area);
