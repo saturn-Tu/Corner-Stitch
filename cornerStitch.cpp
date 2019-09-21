@@ -42,6 +42,13 @@ bool CornerStitchPlane::TileCreate(Rectangle tile) {
     // Split top space tile
     Tile *now_rec = this->PointFinding(tile.rightTop);
     this->SplitTile_H(*now_rec, tile);
+    now_rec->rightTop.y = tile.rightTop.y;
+    // Split bottom space tile
+    Rectangle tmp_bottom(tile.leftBottom.x, now_rec->leftBottom.y, tile.rightTop.x, tile.leftBottom.y);
+    this->SplitTile_H(*now_rec, tmp_bottom);
+    now_rec->rightTop.y = tile.leftBottom.y;
+    
+    
 }
 
 void CornerStitchPlane::SplitTile_H(Tile& ori, Rectangle& tile) {
