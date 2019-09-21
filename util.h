@@ -41,9 +41,18 @@ public:
 
 class Tile: public Rectangle {
 public:
-    Tile(Point lb, Point rt, bool type):Rectangle(lb, rt), type(type){}
-
-    Tile(int x1, int y1, int x2, int y2, bool type):Rectangle(x1,y1,x2,y2), type(type){}
+    Tile(Point lb, Point rt, bool type):Rectangle(lb, rt), type(type){
+        this->bl = 0;
+        this->lb = 0;
+        this->rt = 0;
+        this->tr = 0;
+    }
+    Tile(int x1, int y1, int x2, int y2, bool type):Rectangle(x1,y1,x2,y2), type(type){
+        this->bl = 0;
+        this->lb = 0;
+        this->rt = 0;
+        this->tr = 0;
+    }
     bool type; //0:space, 1:solid
     Tile *bl, *lb, *rt, *tr;
 };
