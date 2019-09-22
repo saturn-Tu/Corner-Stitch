@@ -50,6 +50,7 @@ bool CornerStitchPlane::TileCreate(Rectangle tile) {
     Rectangle tmp_bottom(tile.leftBottom.x, bottom_tile->leftBottom.y, tile.rightTop.x, tile.leftBottom.y);
     this->SplitTile_H(*bottom_tile, tmp_bottom);
     bottom_tile->rightTop.y = tile.leftBottom.y;
+    // Split left space tile
     
     
 }
@@ -81,9 +82,10 @@ void CornerStitchPlane::SplitTile_H(Tile& ori, Rectangle& tile) {
                 new_tile->tr = now_tile;
             }
             now_tile->bl = new_tile;    
-        }       
+        }  
         now_tile = now_tile->lb;
     }
+    if ( !now_tile )  ori.tr = now_tile;
     // update upper tile of origin tile
     bool top_flag = 0;
     now_tile = ori.rt;
@@ -101,4 +103,7 @@ void CornerStitchPlane::SplitTile_H(Tile& ori, Rectangle& tile) {
     cout << "output tile:\n";
     cout << ori << *new_tile;
 }
+
+void CornerStitchPlane::SplitTile_V(Tile& ori, Rectangle& tile) {
+    }
 
