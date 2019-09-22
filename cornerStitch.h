@@ -7,11 +7,12 @@ class CornerStitchPlane{
 public:
     vector <Rectangle> rec_list;
     Tile *start_tile;
-    Tile* PointFinding(Point target);    
+    Tile* PointFinding(Point target, Tile *ref_tile);    
     bool AreaSearch(Rectangle area);
     bool TileCreate(Rectangle tile);
     bool TileDelete(Rectangle tile);
     void SplitTile_H(Tile& ori, Rectangle& tile);
+    void SplitTile_V(Tile& ori, Rectangle& tile);
 };
 
 

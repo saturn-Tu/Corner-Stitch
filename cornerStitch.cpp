@@ -1,8 +1,10 @@
 #include "cornerStitch.h"
 
-Tile* CornerStitchPlane::PointFinding(Point target) {
-    bool direction = 0; //0: vertical 1:horizontal
+Tile* CornerStitchPlane::PointFinding(Point target, Tile *ref_tile) {
+    bool direction = 0; //0: vertical 1:horizontal 
     Tile *now_rec = start_tile;
+    // use ref_tile to save search time
+    now_rec = (ref_tile) ? ref_tile : start_tile;
     while( !now_rec->InRectangle(target) ) {
         if ( direction ) {  
             if ( target.x > now_rec->rightTop.x )
@@ -26,7 +28,7 @@ Tile* CornerStitchPlane::PointFinding(Point target) {
 
 bool CornerStitchPlane::AreaSearch(Rectangle area) {
     Point leftTop(area.leftBottom.x, area.rightTop.y);
-    Tile *now_rec = this->PointFinding(leftTop);
+    Tile *now_rec = this->PointFinding(leftTop, 0);
     while( !now_rec && now_rec->leftBottom.y >= area.leftBottom.y ) {
         while ( now_rec->rightTop.x < area.leftBottom.x ) {
             now_rec = now_rec->tr;    
@@ -40,13 +42,14 @@ bool CornerStitchPlane::AreaSearch(Rectangle area) {
 bool CornerStitchPlane::TileCreate(Rectangle tile) {
     if ( !AreaSearch(tile) )  return 0;
     // Split top space tile
-    Tile *now_rec = this->PointFinding(tile.rightTop);
-    this->SplitTile_H(*now_rec, tile);
-    now_rec->rightTop.y = tile.rightTop.y;
+    Tile *top_tile = this->PointFinding(tile.rightTop, 0);
+    this->SplitTile_H(*top_tile, tile);
+    top_tile->rightTop.y = tile.rightTop.y;
     // Split bottom space tile
-    Rectangle tmp_bottom(tile.leftBottom.x, now_rec->leftBottom.y, tile.rightTop.x, tile.leftBottom.y);
-    this->SplitTile_H(*now_rec, tmp_bottom);
-    now_rec->rightTop.y = tile.leftBottom.y;
+    Tile *bottom_tile = PointFinding(tile.leftBottom, top_tile);
+    Rectangle tmp_bottom(tile.leftBottom.x, bottom_tile->leftBottom.y, tile.rightTop.x, tile.leftBottom.y);
+    this->SplitTile_H(*bottom_tile, tmp_bottom);
+    bottom_tile->rightTop.y = tile.leftBottom.y;
     
     
 }
