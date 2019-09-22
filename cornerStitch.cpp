@@ -87,14 +87,10 @@ void CornerStitchPlane::SplitTile_H(Tile& ori, Rectangle& tile) {
     }
     if ( !now_tile )  ori.tr = now_tile;
     // update upper tile of origin tile
-    bool top_flag = 0;
     now_tile = ori.rt;
+    new_tile->rt = ori.rt;
     while ( now_tile && now_tile->leftBottom.x >= new_tile->leftBottom.x ) {
         if ( now_tile->leftBottom.x >= new_tile->leftBottom.x ) {
-            if ( !top_flag ) {
-                top_flag = 1;
-                new_tile->rt = now_tile;
-            }
             now_tile->lb = new_tile;    
         }       
         now_tile = now_tile->bl;
@@ -104,6 +100,52 @@ void CornerStitchPlane::SplitTile_H(Tile& ori, Rectangle& tile) {
     cout << ori << *new_tile;
 }
 
-void CornerStitchPlane::SplitTile_V(Tile& ori, Rectangle& tile) {
-    }
+//void CornerStitchPlane::SplitTile_V(Tile& ori, Rectangle& tile) {
+//    if ( tile.leftBottom.x == ori.leftBotttom.x ) return;
+//    Tile *new_tile = new Tile(ori.leftBottom.x, ori.leftBottom.y, tile.leftBottom.x, ori.rightTop.y, 0);
+//    new_tile->tr = &ori;
+//    // update bottom tile of origin tile
+//    bool bottom_flag = 0;
+//    Tile *now_tile = ori.lb;
+//    while ( now_tile && now_tile->rightTop.x <= new_tile->rightTop.x ) {
+//        if ( now_tile->rightTop.x > new_tile->leftBottom.x ) {
+//            if ( !bottom_flag ) {
+//                bottom_flag = 1;
+//                new_tile->lb = now_tile;
+//            }
+//            now_tile->rt = new_tile;    
+//        }       
+//        now_tile = now_tile->tr;
+//    }
+//    if ( !now_tile )  ori.lb = now_tile;
+//    // update top tile of origin tile
+//    bool top_flag = 0;
+//    now_tile = ori.rt;
+//    while ( now_tile && now_tile->leftBottom.x >= new_tile->leftBottom.x ) {
+//        if ( now_tile->leftBottom.x >= new_tile->rightTop.x ) {
+//            if ( !top_flag ) {
+//                top_flag = 1;
+//                new_tile->rt = now_tile;
+//            }
+//            now_tile->lb = new_tile;    
+//        }  
+//        now_tile = now_tile->bl;
+//    }
+//    // update left tile of origin tile
+//    bool left_flag = 0;
+//    now_tile = ori.bl;
+//    while ( now_tile && now_tile->leftBottom.x >= new_tile->leftBottom.x ) {
+//        if ( now_tile->leftBottom.x >= new_tile->leftBottom.x ) {
+//            if ( !top_flag ) {
+//                top_flag = 1;
+//                new_tile->rt = now_tile;
+//            }
+//            now_tile->lb = new_tile;    
+//        }       
+//        now_tile = now_tile->rt;
+//    }
+//    ori.bl = new_tile;
+//    cout << "output tile:\n";
+//    cout << ori << *new_tile;
+//}
 
