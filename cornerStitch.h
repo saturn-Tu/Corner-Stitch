@@ -13,8 +13,7 @@ public:
     bool TileDelete(Rectangle tile);
     void SplitTile_H(Tile& ori, Rectangle& tile); // split and create top 
     void SplitTile_V(Tile& ori, Rectangle& tile); // split and create left
+    void EnumerateRight(Tile ref_tile);
+    void EnumerateAll();
 };
-
-
-
 #endif

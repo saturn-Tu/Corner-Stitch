@@ -5,7 +5,7 @@ bool Point::operator==(const Point& a) {
 }
 
 bool Rectangle::InRectangle(Point target) {
-    return target.x > this->leftBottom.x && target.y > this->leftBottom.y && target.x <= this->rightTop.x && target.y <= this->rightTop.y;    
+    return target.x >= this->leftBottom.x && target.y >= this->leftBottom.y && target.x <= this->rightTop.x && target.y <= this->rightTop.y;    
 }
 
 ostream& operator<<(ostream &s, Point p){
