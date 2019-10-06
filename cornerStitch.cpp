@@ -5,8 +5,8 @@ Tile* CornerStitchPlane::PointFinding(Point target, Tile *ref_tile) {
     Tile *now_rec = start_tile;
     // use ref_tile to save search time
     now_rec = (ref_tile) ? ref_tile : start_tile;
-    while( !now_rec->InRectangle(target) ) {
-        cout << "pointfinding " << *now_rec << endl;
+    while( !now_rec->InTile(target) ) {
+        cout << "pointfinding " << *now_rec;
         if ( direction ) {  
             if ( target.x > now_rec->rightTop.x )
                 now_rec = now_rec->tr;
@@ -24,6 +24,7 @@ Tile* CornerStitchPlane::PointFinding(Point target, Tile *ref_tile) {
                 direction = !direction;
         }
     }
+    cout << "point finding FIND: " << *now_rec;
     return now_rec;
 }
 
@@ -51,18 +52,31 @@ bool CornerStitchPlane::TileCreate(Rectangle tile) {
     Rectangle tmp_bottom(tile.leftBottom.x, bottom_tile->leftBottom.y, tile.rightTop.x, tile.leftBottom.y);
     this->SplitTile_H(*bottom_tile, tmp_bottom);
     bottom_tile->rightTop.y = tile.leftBottom.y;
-    // Split left space tile
-    //Tile *middle_tile = top_tile;
-    //do {
-    //    middle_tile = middle_tile.bl;
-    //    while ( middle_tile->rightTop.x < tile.leftBottom.x ) {
-    //        middle_tile = middle->tr;    
-    //    }
-    //    Rectangle *left_rec();
+    cout << "after hori\n"; 
+    this->EnumerateAll();
+    // Split V  tile
+    Tile *middle_tile = this->PointFinding(tile.rightTop, 0);
+    // Find tile for split
+    while ( middle_tile->leftBottom.y >= tile.leftBottom.y ){ 
+        while ( middle_tile->rightTop.x < tile.leftBottom.x ) {
+            middle_tile = middle_tile->tr;    
+        }
+        // Split left space tile
+        Rectangle tmp_middle(tile.leftBottom.x, middle_tile->leftBottom.y, tile.rightTop.x, middle_tile->rightTop.y);
+        this->SplitTile_V(*middle_tile, tmp_middle);
+        middle_tile->leftBottom.x = tmp_middle.leftBottom.x; 
+        cout << "middle: " << *middle_tile;
+        // Split right space tile
+        this->EnumerateAll();
+        cout << "\nSPLIT RIGHT\n\n";
+        Rectangle tmp_right(tile.rightTop.x, middle_tile->leftBottom.y, middle_tile->rightTop.x, middle_tile->rightTop.y);
+        this->SplitTile_V(*middle_tile, tmp_right);
+        middle_tile->leftBottom.x = tmp_right.leftBottom.x; 
+        cout << "middle: " << *middle_tile;
+        middle_tile = middle_tile->lb;
 
-    //}
-    //while ()
-    //Tile *left_tile = Point 
+    }
+    cout << "\n\nFINISH\n\n";
     
 }
 
@@ -112,18 +126,16 @@ void CornerStitchPlane::SplitTile_H(Tile& ori, Rectangle& tile) {
 }
 
 void CornerStitchPlane::SplitTile_V(Tile& ori, Rectangle& tile) {
+    cout << "in V\n";
     if ( tile.leftBottom.x == ori.leftBottom.x ) return;
     Tile *new_tile = new Tile(ori.leftBottom.x, ori.leftBottom.y, tile.leftBottom.x, ori.rightTop.y, 0);
     new_tile->tr = &ori;
     // update bottom tile of origin tile
-    bool bottom_flag = 0;
     Tile *now_tile = ori.lb;
+    cout << "before while\n";
+    new_tile->lb = ori.lb;
     while ( now_tile && now_tile->rightTop.x <= new_tile->rightTop.x ) {
         if ( now_tile->rightTop.x > new_tile->leftBottom.x ) {
-            if ( !bottom_flag ) {
-                bottom_flag = 1;
-                new_tile->lb = now_tile;
-            }
             now_tile->rt = new_tile;    
         }       
         now_tile = now_tile->tr;
@@ -133,7 +145,7 @@ void CornerStitchPlane::SplitTile_V(Tile& ori, Rectangle& tile) {
     bool top_flag = 0;
     now_tile = ori.rt;
     while ( now_tile && now_tile->leftBottom.x >= new_tile->leftBottom.x ) {
-        if ( now_tile->leftBottom.x >= new_tile->rightTop.x ) {
+        if ( now_tile->leftBottom.x < new_tile->rightTop.x ) {
             if ( !top_flag ) {
                 top_flag = 1;
                 new_tile->rt = now_tile;
@@ -145,7 +157,8 @@ void CornerStitchPlane::SplitTile_V(Tile& ori, Rectangle& tile) {
     // update left tile of origin tile
     now_tile = ori.bl;
     new_tile->rt = now_tile;
-    while ( now_tile && now_tile->rightTop.y < new_tile->rightTop.y ) {
+    new_tile->bl = ori.bl;
+    while ( now_tile && now_tile->rightTop.y <= new_tile->rightTop.y ) {
         if ( now_tile->rightTop.y >= new_tile->leftBottom.y ) {
             now_tile->tr = new_tile;    
         }       
@@ -156,16 +169,16 @@ void CornerStitchPlane::SplitTile_V(Tile& ori, Rectangle& tile) {
     cout << ori << *new_tile;
 }
 
-void CornerStitchPlane::EnumerateRight( Tile ref_tile ) {
+void CornerStitchPlane::EnumerateRight( Tile& ref_tile ) {
     Tile *now_tile = ref_tile.tr;
     while ( now_tile && now_tile->leftBottom.y >= ref_tile.leftBottom.y ) {
-        while ( now_tile->leftBottom.x < ref_tile.leftBottom.x ) {
-            now_tile = now_tile->tr;    
-        }
         //  not to enumerate
+        //cout << "now: " << *now_tile;
+        //cout << "now_tile: " << now_tile->bl << " " << *now_tile->bl;
+        //cout << "ref: " << &ref_tile << " " << ref_tile;
         if ( now_tile->bl != &ref_tile )  return;
         else {
-            cout << "ENUMERATE: " << &now_tile;
+            cout << "ENUMERATE: " << *now_tile;
             this->EnumerateRight( *now_tile );
         }
         now_tile = now_tile->lb;
@@ -174,7 +187,7 @@ void CornerStitchPlane::EnumerateRight( Tile ref_tile ) {
 
 void CornerStitchPlane::EnumerateAll() {
     //(0,100) is tmp
-    Point leftTop(0, 100);
+    Point leftTop(this->leftBottom->x, this->rightTop->y);
     Tile *left_tile = this->PointFinding(leftTop, 0);
     while( left_tile ) {
         cout << "ENUMERATE: " << *left_tile;

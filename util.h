@@ -55,6 +55,7 @@ public:
     }
     bool type; //0:space, 1:solid
     Tile *bl, *lb, *rt, *tr;
+    bool InTile(Point target);
 };
 
 #endif
