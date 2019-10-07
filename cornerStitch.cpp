@@ -49,6 +49,7 @@ bool CornerStitchPlane::TileCreate(Rectangle tile) {
     top_tile->rightTop.y = tile.rightTop.y;
     // Split bottom space tile
     Tile *bottom_tile = this->PointFinding(tile.leftBottom, top_tile);
+    cout << "Bottom tile: " << *bottom_tile;
     Rectangle tmp_bottom(tile.leftBottom.x, bottom_tile->leftBottom.y, tile.rightTop.x, tile.leftBottom.y);
     // cuz pointFinding edge case, need to avoid split when y = y
     if ( tmp_bottom.leftBottom.y != tmp_bottom.rightTop.y ) {
@@ -125,7 +126,9 @@ void CornerStitchPlane::SplitTile_H(Tile& ori, Rectangle& tile) {
     // update upper tile of origin tile
     now_tile = ori.rt;
     new_tile->rt = ori.rt;
+    if ( !ori.rt ) cout << "\t\tERROR!!!!!\n";
     while ( now_tile && now_tile->leftBottom.x >= new_tile->leftBottom.x ) {
+        cout << "***Bottom now_tile: " << now_tile;
         if ( now_tile->leftBottom.x >= new_tile->leftBottom.x ) {
             now_tile->lb = new_tile;    
         }       
@@ -156,19 +159,20 @@ void CornerStitchPlane::SplitTile_V(Tile& ori, Rectangle& tile) {
     // update top tile of origin tile
     bool top_flag = 0;
     now_tile = ori.rt;
-    while ( now_tile && now_tile->leftBottom.x >= new_tile->leftBottom.x ) {
+    while ( now_tile && now_tile->rightTop.x >= new_tile->leftBottom.x ) {
         if ( now_tile->leftBottom.x < new_tile->rightTop.x ) {
             if ( !top_flag ) {
                 top_flag = 1;
                 new_tile->rt = now_tile;
             }
-            now_tile->lb = new_tile;    
+
+            if ( now_tile->leftBottom.x >= new_tile->leftBottom.x ) 
+                now_tile->lb = new_tile;    
         }  
         now_tile = now_tile->bl;
     }
     // update left tile of origin tile
     now_tile = ori.bl;
-    new_tile->rt = now_tile;
     new_tile->bl = ori.bl;
     while ( now_tile && now_tile->rightTop.y <= new_tile->rightTop.y ) {
         if ( now_tile->rightTop.y >= new_tile->leftBottom.y ) {
