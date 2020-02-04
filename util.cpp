@@ -8,6 +8,35 @@ bool Rectangle::InRectangle(Point target) {
     return target.x >= this->leftBottom.x && target.y >= this->leftBottom.y && target.x <= this->rightTop.x && target.y <= this->rightTop.y;    
 }
 
+string Tile::ReturnOutlineString() {
+    string s;
+    if (this->type == 0)
+        s.append("SPACE ");
+    else
+        s.append("TILE ");
+    s.append(to_string(this->leftBottom.x));
+    s.append(" ");
+    s.append(to_string(this->leftBottom.y));
+    s.append(" ");
+    s.append(to_string(this->leftBottom.x));
+    s.append(" ");
+    s.append(to_string(this->rightTop.y));
+    s.append(" ");
+    s.append(to_string(this->rightTop.x));
+    s.append(" ");
+    s.append(to_string(this->rightTop.y));
+    s.append(" ");
+    s.append(to_string(this->rightTop.x));
+    s.append(" ");
+    s.append(to_string(this->leftBottom.y));
+    s.append(" ");
+    s.append(to_string(this->leftBottom.x));
+    s.append(" ");
+    s.append(to_string(this->leftBottom.y));
+    s.append("\n");
+    return s;
+}
+
 bool Tile::InTile(Point target) {
     if ( !this->lb && !this->bl ) // touch left couner
         return target.x >= this->leftBottom.x && target.y >= this->leftBottom.y && target.x <= this->rightTop.x && target.y <= this->rightTop.y;    

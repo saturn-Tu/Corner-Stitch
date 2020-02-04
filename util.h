@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -56,6 +57,7 @@ public:
     bool type; //0:space, 1:solid
     Tile *bl, *lb, *rt, *tr;
     bool InTile(Point target);
+    string ReturnOutlineString();
 };
 
 #endif

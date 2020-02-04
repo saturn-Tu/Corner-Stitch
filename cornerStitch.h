@@ -2,6 +2,8 @@
 #define _CORNER_STITCH_H
 
 #include "util.h"
+#include<iostream>
+#include<fstream>
 
 class CornerStitchPlane{
 public:
@@ -16,5 +18,7 @@ public:
     void SplitTile_V(Tile& ori, Rectangle& tile); // split and create left
     void EnumerateRight(Tile& ref_tile);
     void EnumerateAll();
+    void OutputEnumerate(string filename);
+    void OutputEnumerateRight(ofstream& o_file, Tile& ref_tile);
 };
 #endif

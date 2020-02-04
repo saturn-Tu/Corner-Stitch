@@ -211,3 +211,30 @@ void CornerStitchPlane::EnumerateAll() {
         left_tile = left_tile->lb;
     }
 }
+
+void CornerStitchPlane::OutputEnumerate(string filename) {
+    ofstream o_file;
+    o_file.open(filename);
+    Point leftTop(this->leftBottom->x, this->rightTop->y);
+    Tile *left_tile = this->PointFinding(leftTop, 0);
+    while( left_tile ) {
+        cout << left_tile->ReturnOutlineString();
+        o_file << left_tile->ReturnOutlineString();
+        this->OutputEnumerateRight(o_file, *left_tile);
+        left_tile = left_tile->lb;
+    }
+    o_file.close();
+}
+
+void CornerStitchPlane::OutputEnumerateRight(ofstream& o_file, Tile& ref_tile) {
+    Tile *now_tile = ref_tile.tr;
+    while ( now_tile && now_tile->leftBottom.y >= ref_tile.leftBottom.y ) {
+        if ( now_tile->bl != &ref_tile )  return;
+        else {
+            cout << now_tile->ReturnOutlineString();
+            o_file << now_tile->ReturnOutlineString();
+            this->OutputEnumerateRight(o_file, *now_tile);
+        }
+        now_tile = now_tile->lb;
+    }
+}
