@@ -52,17 +52,19 @@ int main( int argc, char *argv[] ){
     for ( auto rec : plane.rec_list) {
         cout << rec;    
     }
-    plane.start_tile = new Tile(*plane.leftBottom, *plane.rightTop, 1);
+    plane.start_tile = new Tile(*plane.leftBottom, *plane.rightTop, 0);
     for ( auto rec : plane.rec_list ) {
         plane.TileCreate(rec);
         cout << "\n\n\n*****finish once*****\n";
-        plane.EnumerateAll();
-        cout << "\n\n\n";
+        //plane.EnumerateAll();
+        //cout << "\n\n\n";
+        plane.OutputEnumerate("output.txt");
     }
 
     cout << "After TileCreate\n";
     plane.OutputEnumerate("output.txt");
     //cout << *plane.start_tile;
     //plane.EnumerateAll();
+    cout << "Done\n";
     return 0;
 }
