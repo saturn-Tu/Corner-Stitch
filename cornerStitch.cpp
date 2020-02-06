@@ -57,7 +57,7 @@ bool CornerStitchPlane::TileCreate(Rectangle tile) {
         bottom_tile->rightTop.y = tile.leftBottom.y;
     }
     cout << "after hori\n"; 
-    this->EnumerateAll();
+    //this->EnumerateAll();
     // Split V  tile
     Tile *middle_tile = this->PointFinding(tile.rightTop, 0);
     // Find tile for split
@@ -74,7 +74,7 @@ bool CornerStitchPlane::TileCreate(Rectangle tile) {
         }
         cout << "middle: " << *middle_tile;
         // Split right space tile
-        this->EnumerateAll();
+        //this->EnumerateAll();
         cout << "\nSPLIT RIGHT\n\n";
         Rectangle tmp_right(tile.rightTop.x, middle_tile->leftBottom.y, middle_tile->rightTop.x, middle_tile->rightTop.y);
         // cuz pointFinding edge case, need to avoid split when x = x
@@ -82,10 +82,12 @@ bool CornerStitchPlane::TileCreate(Rectangle tile) {
             this->SplitTile_V(*middle_tile, tmp_right);
             middle_tile->leftBottom.x = tmp_right.leftBottom.x; 
             middle_tile->bl->type = 1;
+            MergeTileUpward(middle_tile->bl);
             middle_tile = middle_tile->bl->lb;
         }
         else {
             middle_tile->type = 1;
+            MergeTileUpward(middle_tile);
             middle_tile = middle_tile->lb;
         }
     }
@@ -221,7 +223,7 @@ void CornerStitchPlane::OutputEnumerate(string filename) {
     Point leftTop(this->leftBottom->x, this->rightTop->y);
     Tile *left_tile = this->PointFinding(leftTop, 0);
     while( left_tile ) {
-        cout << left_tile->ReturnOutlineString();
+        //cout << left_tile->ReturnOutlineString();
         o_file << left_tile->ReturnOutlineString();
         this->OutputEnumerateRight(o_file, *left_tile);
         left_tile = left_tile->lb;
@@ -234,10 +236,43 @@ void CornerStitchPlane::OutputEnumerateRight(ofstream& o_file, Tile& ref_tile) {
     while ( now_tile && now_tile->leftBottom.y >= ref_tile.leftBottom.y ) {
         if ( now_tile->bl != &ref_tile )  return;
         else {
-            cout << now_tile->ReturnOutlineString();
+            //cout << now_tile->ReturnOutlineString();
             o_file << now_tile->ReturnOutlineString();
             this->OutputEnumerateRight(o_file, *now_tile);
         }
         now_tile = now_tile->lb;
     }
+}
+
+void CornerStitchPlane::MergeTileUpward(Tile* tile) {
+    bool type = tile->type;
+    Tile* up_tile = tile->rt;
+    while (up_tile) {
+        if (up_tile->leftBottom.x == tile->leftBottom.x && up_tile->rightTop.x == tile->rightTop.x) {
+            MergeTileUpdate(tile, up_tile);
+        }
+        else break;
+        // tile just merge once, space can merge unlimit
+        if (type == 1) break;
+        up_tile = up_tile->rt;
+    }
+}
+
+void CornerStitchPlane::MergeTileUpdate(Tile* tile_l, Tile* tile_u) {
+    // update info at left tile
+    Tile* left_tile = tile_u->bl;
+    while (left_tile && left_tile->leftBottom.y < tile_u->rightTop.y) {
+        left_tile->tr = tile_l;
+        left_tile = left_tile->rt;
+    }
+    // update info at right tile
+    Tile* right_tile = tile_u->tr;
+    while (right_tile && right_tile->leftBottom.y >= tile_u->leftBottom.y) {
+        right_tile->bl = tile_l;
+        right_tile = right_tile->lb;
+    }
+    tile_l->rt = tile_u->rt;
+    tile_l->tr = tile_u->tr;
+    tile_l->rightTop.y = tile_u->rightTop.y;
+    delete(tile_u);
 }

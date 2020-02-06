@@ -20,5 +20,8 @@ public:
     void EnumerateAll();
     void OutputEnumerate(string filename);
     void OutputEnumerateRight(ofstream& o_file, Tile& ref_tile);
+    void MergeTileUpward(Tile* tile);
+    // merge upper tile to lower tile
+    void MergeTileUpdate(Tile* tile_l, Tile* tile_u);
 };
 #endif
