@@ -10,25 +10,6 @@ int main( int argc, char *argv[] ){
     char *filename = argv[1];
     std::ifstream input_file;
     CornerStitchPlane plane;
-
-    //Point a1(3,5);
-    //Point a2(3,8);
-    //Point a3(6,8);
-    //Point a4(6,5);
-    //Point target1(4,6);
-    //Point target2(2,6);
-    //vector <Point> tmp;
-    //tmp.push_back(a3);
-    //tmp.push_back(a1);
-    //tmp.push_back(a2);
-    //tmp.push_back(a4);
-    //Rectangle tmp_rec(tmp);
-    //cout << tmp_rec; 
-    //cout << tmp_rec.InRectangle(target1) << endl; 
-    //cout << tmp_rec.InRectangle(target2) << endl;
-
-    //int a;
-    //cin >> a;
     
     // parse input_file to rec_list 
     input_file.open(filename);

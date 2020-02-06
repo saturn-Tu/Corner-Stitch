@@ -81,6 +81,7 @@ bool CornerStitchPlane::TileCreate(Rectangle tile) {
         if ( tmp_right.leftBottom.x != tmp_right.rightTop.x ) {
             this->SplitTile_V(*middle_tile, tmp_right);
             middle_tile->leftBottom.x = tmp_right.leftBottom.x; 
+            middle_tile->bl->type = 1;
         }
         cout << "middle: " << *middle_tile;
         middle_tile = middle_tile->lb;
