@@ -19,6 +19,8 @@ int main( int argc, char *argv[] ){
     }
     vector <int> rectangle_list;
     unsigned int min_x = -1, min_y = -1, max_x = 0, max_y = 0;
+    cout << "parsing\n";
+    // parse file
     while ( !input_file.eof() ) {
         stringstream ss; 
         string line, word;
@@ -46,6 +48,7 @@ int main( int argc, char *argv[] ){
         max_x = (rec.rightTop.x > max_x) ?rec.rightTop.x :max_x;
         max_y = (rec.rightTop.y > max_y) ?rec.rightTop.y :max_y;
     }
+    cout << "after parsing\n";
     plane.leftBottom = new Point(min_x, min_y); 
     plane.rightTop = new Point(max_x, max_y);
     cout << "Boundary:" << *plane.leftBottom << *plane.rightTop << endl;
@@ -55,10 +58,10 @@ int main( int argc, char *argv[] ){
     plane.start_tile = new Tile(*plane.leftBottom, *plane.rightTop, 0);
     for ( auto rec : plane.rec_list ) {
         plane.TileCreate(rec);
-        cout << "\n\n\n*****finish once*****\n";
+        //cout << "\n\n\n*****finish once*****\n";
         //plane.EnumerateAll();
         //cout << "\n\n\n";
-        plane.OutputEnumerate("output.txt");
+        //plane.OutputEnumerate("output.txt");
     }
 
     cout << "After TileCreate\n";
