@@ -37,15 +37,19 @@ string Tile::ReturnOutlineString() {
     return s;
 }
 
-bool Tile::InTile(Point target) {
-    if ( !this->lb && !this->bl ) // touch left couner
+bool Tile::InTile(Point target, bool downward) {
+    if ( !this->lb && !this->bl ) // touch left corner
         return target.x >= this->leftBottom.x && target.y >= this->leftBottom.y && target.x <= this->rightTop.x && target.y <= this->rightTop.y;    
     else if ( !this->lb ) // touch botton edge
         return target.x > this->leftBottom.x && target.y >= this->leftBottom.y && target.x <= this->rightTop.x && target.y <= this->rightTop.y;    
     else if ( !this->bl ) // touch left edge
         return target.x >= this->leftBottom.x && target.y > this->leftBottom.y && target.x <= this->rightTop.x && target.y <= this->rightTop.y;    
-    else // normal
-        return target.x > this->leftBottom.x && target.y > this->leftBottom.y && target.x <= this->rightTop.x && target.y <= this->rightTop.y;    
+    else {// normal
+        if (downward)
+            return target.x > this->leftBottom.x && target.y >= this->leftBottom.y && target.x <= this->rightTop.x && target.y < this->rightTop.y;    
+        else
+            return target.x > this->leftBottom.x && target.y > this->leftBottom.y && target.x <= this->rightTop.x && target.y <= this->rightTop.y;    
+    }
 }
 
 ostream& operator<<(ostream &s, Point p){

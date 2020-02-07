@@ -1,11 +1,11 @@
 #include "cornerStitch.h"
 
-Tile* CornerStitchPlane::PointFinding(Point target, Tile *ref_tile) {
+Tile* CornerStitchPlane::PointFinding(Point target, Tile *ref_tile, bool downward) {
     bool direction = 0; //0: vertical 1:horizontal 
     Tile *now_rec = start_tile;
     // use ref_tile to save search time
     now_rec = (ref_tile) ? ref_tile : start_tile;
-    while( !now_rec->InTile(target) ) {
+    while( !now_rec->InTile(target, downward) ) {
         //cout << "pointfinding " << *now_rec;
         if ( direction ) {  
             if ( target.x > now_rec->rightTop.x )
@@ -48,7 +48,7 @@ bool CornerStitchPlane::TileCreate(Rectangle tile) {
     this->SplitTile_H(*top_tile, tile);
     top_tile->rightTop.y = tile.rightTop.y;
     // Split bottom space tile
-    Tile *bottom_tile = this->PointFinding(tile.leftBottom, top_tile);
+    Tile *bottom_tile = this->PointFinding(tile.leftBottom, top_tile, 1);
     cout << "Bottom tile: " << *bottom_tile;
     Rectangle tmp_bottom(tile.leftBottom.x, bottom_tile->leftBottom.y, tile.rightTop.x, tile.leftBottom.y);
     // cuz pointFinding edge case, need to avoid split when y = y

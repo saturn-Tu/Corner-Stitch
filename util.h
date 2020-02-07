@@ -56,7 +56,7 @@ public:
     }
     bool type; //0:space, 1:solid
     Tile *bl, *lb, *rt, *tr;
-    bool InTile(Point target);
+    bool InTile(Point target, bool downward);
     string ReturnOutlineString();
 };
 
