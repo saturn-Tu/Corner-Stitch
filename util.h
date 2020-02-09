@@ -18,6 +18,7 @@ public:
 
 class Rectangle {
 public:
+    Rectangle();
     Rectangle(std::vector <Point> outline){
         leftBottom = outline[0];
         rightTop = outline[0]; 
@@ -42,6 +43,12 @@ public:
 
 class Tile: public Rectangle {
 public:
+    Tile() {
+        this->bl = 0;
+        this->lb = 0;
+        this->rt = 0;
+        this->tr = 0;
+    }
     Tile(Point lb, Point rt, bool type):Rectangle(lb, rt), type(type){
         this->bl = 0;
         this->lb = 0;

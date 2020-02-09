@@ -21,7 +21,13 @@ public:
     void OutputEnumerate(string filename);
     void OutputEnumerateRight(ofstream& o_file, Tile& ref_tile);
     void MergeTileUpward(Tile* tile);
+    void MergeTileDownward(Tile* tile);
     // merge upper tile to lower tile
     void MergeTileUpdate(Tile* tile_l, Tile* tile_u);
+    void MergeNeighborSpaceTile(Tile* tile);
+    // Output all surronding tile for debug
+    void OutputSurrondingAll(string filename);
+    void OutputSurronding(ofstream& o_file, Tile& ref_tile);
+    void OutputSurrondingTile(ofstream& o_file, Tile* ref_tile);
 };
 #endif
