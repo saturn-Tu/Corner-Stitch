@@ -83,14 +83,14 @@ bool CornerStitchPlane::TileCreate(Rectangle tile) {
             this->SplitTile_V(*middle_tile, tmp_right);
             middle_tile->leftBottom.x = tmp_right.leftBottom.x; 
             middle_tile->bl->type = 1;
-            MergeTileUpward(middle_tile->bl);
+            MergeTileUpward(middle_tile->bl, tile.rightTop.y);
             solid_tile = middle_tile->bl;
             cout << "solid: " << *solid_tile;
             middle_tile = solid_tile->lb;
         }
         else {
             middle_tile->type = 1;
-            MergeTileUpward(middle_tile);
+            MergeTileUpward(middle_tile, tile.rightTop.y);
             solid_tile = middle_tile;
             middle_tile = middle_tile->lb;
         }
@@ -246,17 +246,17 @@ void CornerStitchPlane::OutputEnumerateRight(ofstream& o_file, Tile& ref_tile) {
     }
 }
 
-void CornerStitchPlane::MergeTileUpward(Tile* tile) {
+void CornerStitchPlane::MergeTileUpward(Tile* tile, int bound_y) {
     bool type = tile->type;
     Tile* up_tile = tile->rt;
-    while (up_tile) {
+    while (up_tile && up_tile->leftBottom.y < bound_y) {
         if (up_tile->leftBottom.x == tile->leftBottom.x && up_tile->rightTop.x == tile->rightTop.x) {
             MergeTileUpdate(tile, up_tile);
         }
         else break;
         // tile just merge once, space can merge unlimit
         if (type == 1) break;
-        up_tile = up_tile->rt;
+        up_tile = tile->rt;
     }
 }
 
@@ -304,12 +304,12 @@ void CornerStitchPlane::MergeTileUpdate(Tile* tile_l, Tile* tile_u) {
 
 void CornerStitchPlane::MergeNeighborSpaceTile(Tile* tile) {
     if (tile->bl) {
-        //MergeTileUpward(tile->bl);
+        MergeTileUpward(tile->bl);
         MergeTileDownward(tile->bl);
         cout << "yes left\n";
     }
     if (tile->tr) {
-        //MergeTileUpward(tile->tr);
+        MergeTileUpward(tile->tr);
         MergeTileDownward(tile->tr);
         cout << "yes right\n";
     }

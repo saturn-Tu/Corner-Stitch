@@ -4,6 +4,7 @@
 #include "util.h"
 #include<iostream>
 #include<fstream>
+#include <climits>
 
 class CornerStitchPlane{
 public:
@@ -20,7 +21,7 @@ public:
     void EnumerateAll();
     void OutputEnumerate(string filename);
     void OutputEnumerateRight(ofstream& o_file, Tile& ref_tile);
-    void MergeTileUpward(Tile* tile);
+    void MergeTileUpward(Tile* tile, int bound_y=INT_MAX);
     void MergeTileDownward(Tile* tile);
     // merge upper tile to lower tile
     void MergeTileUpdate(Tile* tile_l, Tile* tile_u);
