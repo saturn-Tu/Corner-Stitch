@@ -38,6 +38,7 @@ public:
     }
     Point leftBottom, rightTop;
     bool InRectangle(Point target);
+    bool operator==(const Rectangle& a);
     friend ostream &operator<<(ostream &s, Rectangle r); 
 };
 

@@ -85,7 +85,6 @@ bool CornerStitchPlane::TileCreate(Rectangle tile) {
             middle_tile->bl->type = 1;
             MergeTileUpward(middle_tile->bl, tile.rightTop.y);
             solid_tile = middle_tile->bl;
-            cout << "solid: " << *solid_tile;
             middle_tile = solid_tile->lb;
         }
         else {
@@ -306,12 +305,10 @@ void CornerStitchPlane::MergeNeighborSpaceTile(Tile* tile) {
     if (tile->bl) {
         MergeTileUpward(tile->bl);
         MergeTileDownward(tile->bl);
-        cout << "yes left\n";
     }
     if (tile->tr) {
         MergeTileUpward(tile->tr);
         MergeTileDownward(tile->tr);
-        cout << "yes right\n";
     }
 }
 
@@ -353,4 +350,12 @@ void CornerStitchPlane::OutputSurrondingTile(ofstream& o_file, Tile* ref_tile) {
         o_file << ref_tile->bl->ReturnOutlineString();
     if (ref_tile->lb != 0) 
         o_file << ref_tile->lb->ReturnOutlineString();
+}
+
+void CornerStitchPlane::TileDelete(Rectangle tile) {
+    cout << "tile: " << tile;
+    Point middle_point( (tile.rightTop.x+tile.leftBottom.x)/2, (tile.rightTop.y+tile.leftBottom.y)/2 );
+    Tile *target_tile = this->PointFinding(middle_point, 0);
+    // handle right adjacent tile
+    
 }

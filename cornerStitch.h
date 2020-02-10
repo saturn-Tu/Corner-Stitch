@@ -14,7 +14,7 @@ public:
     Tile* PointFinding(Point target, Tile *ref_tile, bool downward=0);    
     bool AreaSearch(Rectangle area);
     bool TileCreate(Rectangle tile);
-    bool TileDelete(Rectangle tile);
+    void TileDelete(Rectangle tile);
     void SplitTile_H(Tile& ori, Rectangle& tile); // split and create top 
     void SplitTile_V(Tile& ori, Rectangle& tile); // split and create left
     void EnumerateRight(Tile& ref_tile);

@@ -4,6 +4,10 @@ bool Point::operator==(const Point& a) {
     return this->x == a.x && this->y == a.y;   
 }
 
+bool Rectangle::operator==(const Rectangle& a) {
+    return this->leftBottom == a.leftBottom && this->rightTop == a.rightTop;
+}
+
 bool Rectangle::InRectangle(Point target) {
     return target.x >= this->leftBottom.x && target.y >= this->leftBottom.y && target.x <= this->rightTop.x && target.y <= this->rightTop.y;    
 }
