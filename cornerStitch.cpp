@@ -250,7 +250,7 @@ void CornerStitchPlane::MergeTileUpward(Tile* tile, int bound_y) {
     Tile* up_tile = tile->rt;
     while (up_tile && up_tile->leftBottom.y < bound_y) {
         if (up_tile->leftBottom.x == tile->leftBottom.x && up_tile->rightTop.x == tile->rightTop.x) {
-            MergeTileUpdate(tile, up_tile);
+            MergeTileUpdate_V(tile, up_tile);
         }
         else break;
         // tile just merge once, space can merge unlimit
@@ -267,7 +267,7 @@ void CornerStitchPlane::MergeTileDownward(Tile* tile) {
             Tile* tmp = tile;
             tile = down_tile;
             down_tile = tmp;
-            MergeTileUpdate(tile, down_tile);
+            MergeTileUpdate_V(tile, down_tile);
         }
         else break;
         // solid tile just merge once, space can merge unlimit
@@ -276,7 +276,7 @@ void CornerStitchPlane::MergeTileDownward(Tile* tile) {
     }
 }
 
-void CornerStitchPlane::MergeTileUpdate(Tile* tile_l, Tile* tile_u) {
+void CornerStitchPlane::MergeTileUpdate_V(Tile* tile_l, Tile* tile_u) {
     // update info at left tile
     Tile* left_tile = tile_u->bl;
     while (left_tile && left_tile->leftBottom.y < tile_u->rightTop.y) {
@@ -357,5 +357,5 @@ void CornerStitchPlane::TileDelete(Rectangle tile) {
     Point middle_point( (tile.rightTop.x+tile.leftBottom.x)/2, (tile.rightTop.y+tile.leftBottom.y)/2 );
     Tile *target_tile = this->PointFinding(middle_point, 0);
     // handle right adjacent tile
-    
+
 }

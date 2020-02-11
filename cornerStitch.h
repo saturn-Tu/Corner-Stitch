@@ -24,7 +24,7 @@ public:
     void MergeTileUpward(Tile* tile, int bound_y=INT_MAX);
     void MergeTileDownward(Tile* tile);
     // merge upper tile to lower tile
-    void MergeTileUpdate(Tile* tile_l, Tile* tile_u);
+    void MergeTileUpdate_V(Tile* tile_l, Tile* tile_u);
     void MergeNeighborSpaceTile(Tile* tile);
     // Output all surronding tile for debug
     void OutputSurrondingAll(string filename);
