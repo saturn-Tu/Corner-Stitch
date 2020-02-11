@@ -30,5 +30,7 @@ public:
     void OutputSurrondingAll(string filename);
     void OutputSurronding(ofstream& o_file, Tile& ref_tile);
     void OutputSurrondingTile(ofstream& o_file, Tile* ref_tile);
+    // merge right tile to left tile
+    void CornerStitchPlane::MergeTileUpdate_H(Tile* tile_l, Tile* tile_r);
 };
 #endif

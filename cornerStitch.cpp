@@ -359,3 +359,28 @@ void CornerStitchPlane::TileDelete(Rectangle tile) {
     // handle right adjacent tile
 
 }
+
+void CornerStitchPlane::MergeTileUpdate_H(Tile* tile_l, Tile* tile_r) {
+    // update info at lower tile
+    Tile* lower_tile = tile_r->lb;
+    while (lower_tile && lower_tile->leftBottom.x < tile_r->rightTop.x) {
+        lower_tile->rt = tile_l;
+        lower_tile = lower_tile->rt;
+    }
+    // update info at upper tile
+    Tile* upper_tile = tile_r->rt;
+    while (upper_tile && upper_tile->leftBottom.x >= tile_r->leftBottom.x) {
+        upper_tile->lb = tile_l;
+        upper_tile = upper_tile->bl;
+    }
+    // update info at right tile
+    Tile* right_tile = tile_r->tr;
+    while (right_tile && right_tile->leftBottom.y >= tile_r->leftBottom.y) {
+        right_tile->bl = tile_l;
+        right_tile = right_tile->lb;
+    }
+    tile_l->rt = tile_r->rt;
+    tile_l->tr = tile_r->tr;
+    tile_l->rightTop.x = tile_r->rightTop.x;
+    delete(tile_r);
+}
