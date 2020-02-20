@@ -15,7 +15,7 @@ public:
     bool AreaSearch(Rectangle area);
     bool TileCreate(Rectangle tile);
     void TileDelete(Rectangle tile);
-    void SplitTile_H(Tile& ori, Rectangle& tile); // split and create top 
+    void SplitTile_H(Tile& ori, Rectangle& tile); // split and create top, use ref tile rt.y as split
     void SplitTile_V(Tile& ori, Rectangle& tile); // split and create left
     void EnumerateRight(Tile& ref_tile);
     void EnumerateAll();
@@ -31,6 +31,7 @@ public:
     void OutputSurronding(ofstream& o_file, Tile& ref_tile);
     void OutputSurrondingTile(ofstream& o_file, Tile* ref_tile);
     // merge right tile to left tile
-    void CornerStitchPlane::MergeTileUpdate_H(Tile* tile_l, Tile* tile_r);
+    void MergeTileUpdate_H(Tile* tile_l, Tile* tile_r);
+    void TileDeleteRight(Tile* target_tile);
 };
 #endif

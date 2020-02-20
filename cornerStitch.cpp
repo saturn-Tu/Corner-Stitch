@@ -353,11 +353,14 @@ void CornerStitchPlane::OutputSurrondingTile(ofstream& o_file, Tile* ref_tile) {
 }
 
 void CornerStitchPlane::TileDelete(Rectangle tile) {
-    cout << "tile: " << tile;
     Point middle_point( (tile.rightTop.x+tile.leftBottom.x)/2, (tile.rightTop.y+tile.leftBottom.y)/2 );
-    Tile *target_tile = this->PointFinding(middle_point, 0);
+    Tile* target_tile = this->PointFinding(middle_point, 0);
+    target_tile->type = 0;
     // handle right adjacent tile
-
+    Tile* left_tile = target_tile->bl;
+    cout << "tile: " << *target_tile;
+    TileDeleteRight(target_tile);
+    
 }
 
 void CornerStitchPlane::MergeTileUpdate_H(Tile* tile_l, Tile* tile_r) {
@@ -383,4 +386,31 @@ void CornerStitchPlane::MergeTileUpdate_H(Tile* tile_l, Tile* tile_r) {
     tile_l->tr = tile_r->tr;
     tile_l->rightTop.x = tile_r->rightTop.x;
     delete(tile_r);
+}
+
+void CornerStitchPlane::TileDeleteRight(Tile* target_tile) {
+    Tile* right_tile = target_tile->tr;
+    int y_lbound = target_tile->leftBottom.y;
+    cout << "y: " << y_lbound << endl;
+    cout << "right_tile : " << *right_tile;
+    while (target_tile && target_tile->leftBottom.y >= y_lbound) {
+        // split right tile vertically
+        if (right_tile->rightTop.y > target_tile->rightTop.y) {
+            cout << "split right\n";
+            Rectangle rec_u(target_tile->leftBottom.x, target_tile->leftBottom.y, 
+                            right_tile->rightTop.x, right_tile->rightTop.y);
+            this->SplitTile_H(*right_tile, rec_u);
+        }
+        // split target tile vertically
+        if (target_tile->leftBottom.y < right_tile->leftBottom.y) {
+            cout << "split it self\n";
+            Rectangle rec_d(target_tile->leftBottom.x, target_tile->leftBottom.y, 
+                            right_tile->rightTop.x, right_tile->rightTop.y);
+            this->SplitTile_H(*target_tile, rec_d);
+            target_tile->rightTop.y = right_tile->leftBottom.y;
+        }
+        
+        //MergeTileUpdate_H()
+        target_tile = target_tile->lb;
+    }
 }
