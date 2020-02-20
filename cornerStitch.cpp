@@ -31,7 +31,7 @@ Tile* CornerStitchPlane::PointFinding(Point target, Tile *ref_tile, bool downwar
 bool CornerStitchPlane::AreaSearch(Rectangle area) {
     Point leftTop(area.leftBottom.x, area.rightTop.y);
     Tile *now_rec = this->PointFinding(leftTop, 0);
-    while( !now_rec && now_rec->leftBottom.y >= area.leftBottom.y ) {
+    while( now_rec && now_rec->leftBottom.y >= area.leftBottom.y ) {
         while ( now_rec->rightTop.x < area.leftBottom.x ) {
             now_rec = now_rec->tr;    
         }
