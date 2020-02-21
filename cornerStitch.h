@@ -15,7 +15,7 @@ public:
     bool AreaSearch(Rectangle area);
     bool TileCreate(Rectangle tile);
     void TileDelete(Rectangle tile);
-    void SplitTile_H(Tile& ori, Rectangle& tile); // split and create top, use ref tile rt.y as split
+    void SplitTile_H(Tile& ori, int split_y); // split and create top, use ref tile rt.y as split
     void SplitTile_V(Tile& ori, Rectangle& tile); // split and create left
     void EnumerateRight(Tile& ref_tile);
     void EnumerateAll();
@@ -23,6 +23,9 @@ public:
     void OutputEnumerateRight(ofstream& o_file, Tile& ref_tile);
     void MergeTileUpward(Tile* tile, int bound_y=INT_MAX);
     void MergeTileDownward(Tile* tile);
+    // just for space tile mergeing
+    void MergeTileRightward(Tile* tile);
+    void MergeTileLeftward(Tile* tile);
     // merge upper tile to lower tile
     void MergeTileUpdate_V(Tile* tile_l, Tile* tile_u);
     void MergeNeighborSpaceTile_V(Tile* tile);
