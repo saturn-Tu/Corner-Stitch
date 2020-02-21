@@ -94,7 +94,7 @@ bool CornerStitchPlane::TileCreate(Rectangle tile) {
             middle_tile = middle_tile->lb;
         }
     }
-    MergeNeighborSpaceTile(solid_tile);
+    MergeNeighborSpaceTile_V(solid_tile);
     cout << "FINISH create\n";
 }
 
@@ -301,7 +301,7 @@ void CornerStitchPlane::MergeTileUpdate_V(Tile* tile_l, Tile* tile_u) {
     delete(tile_u);
 }
 
-void CornerStitchPlane::MergeNeighborSpaceTile(Tile* tile) {
+void CornerStitchPlane::MergeNeighborSpaceTile_V(Tile* tile) {
     if (tile->bl) {
         MergeTileUpward(tile->bl);
         MergeTileDownward(tile->bl);
@@ -389,17 +389,24 @@ void CornerStitchPlane::MergeTileUpdate_H(Tile* tile_l, Tile* tile_r) {
 }
 
 void CornerStitchPlane::TileDeleteRight(Tile* target_tile) {
+    if (target_tile->type == 1) return;
     Tile* right_tile = target_tile->tr;
     int y_lbound = target_tile->leftBottom.y;
     cout << "y: " << y_lbound << endl;
     cout << "right_tile : " << *right_tile;
     while (target_tile && target_tile->leftBottom.y >= y_lbound) {
         // split right tile vertically
-        if (right_tile->rightTop.y > target_tile->rightTop.y) {
+        if (right_tile->type == 0 && right_tile->rightTop.y > target_tile->rightTop.y) {
             cout << "split right\n";
             Rectangle rec_u(target_tile->leftBottom.x, target_tile->leftBottom.y, 
                             right_tile->rightTop.x, right_tile->rightTop.y);
             this->SplitTile_H(*right_tile, rec_u);
+        }
+        if (right_tile->type == 0 && right_tile->leftBottom.y < target_tile->leftBottom.y) {
+            cout << "split right\n";
+            Rectangle rec_d(right_tile->leftBottom.x, right_tile->leftBottom.y, 
+                            target_tile->rightTop.x, target_tile->rightTop.y);
+            this->SplitTile_H(*right_tile, rec_d);
         }
         // split target tile vertically
         if (target_tile->leftBottom.y < right_tile->leftBottom.y) {
@@ -409,7 +416,6 @@ void CornerStitchPlane::TileDeleteRight(Tile* target_tile) {
             this->SplitTile_H(*target_tile, rec_d);
             target_tile->rightTop.y = right_tile->leftBottom.y;
         }
-        
         //MergeTileUpdate_H()
         target_tile = target_tile->lb;
     }
