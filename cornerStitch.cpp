@@ -290,7 +290,7 @@ void CornerStitchPlane::MergeTileRightward(Tile* tile) {
             MergeTileUpdate_H(tile, right_tile);
         }
         else break;
-        right_tile = tile->tr;
+        right_tile = right_tile->tr;
     }
 }
 
@@ -401,7 +401,7 @@ void CornerStitchPlane::MergeTileUpdate_H(Tile* tile_l, Tile* tile_r) {
     Tile* lower_tile = tile_r->lb;
     while (lower_tile && lower_tile->leftBottom.x < tile_r->rightTop.x) {
         lower_tile->rt = tile_l;
-        lower_tile = lower_tile->rt;
+        lower_tile = lower_tile->tr;
     }
     // update info at upper tile
     Tile* upper_tile = tile_r->rt;
@@ -428,16 +428,19 @@ void CornerStitchPlane::TileDeleteRight(Tile* target_tile) {
     while (target_tile && target_tile->leftBottom.y >= y_lbound) {
         Tile* right_tile = target_tile->tr;
         // split right tile vertically
-        /*if (right_tile->type == 0 && right_tile->rightTop.y > target_tile->rightTop.y) {
+        if (right_tile->type == 0 && right_tile->rightTop.y > target_tile->rightTop.y) {
             cout << "split right\n";
             int split_y = target_tile->rightTop.y;
             this->SplitTile_H(*right_tile, split_y);
+            right_tile->rightTop.y = split_y;
         }
         if (right_tile->type == 0 && right_tile->leftBottom.y < target_tile->leftBottom.y) {
             cout << "split right\n";
             int split_y = target_tile->leftBottom.y;
             this->SplitTile_H(*right_tile, split_y);
-        }*/
+            right_tile->rightTop.y = split_y;
+            right_tile = right_tile->rt;
+        }
         // split target tile vertically
         Tile* center_tile = target_tile;
         Tile* next_tile = target_tile->lb;
@@ -450,8 +453,8 @@ void CornerStitchPlane::TileDeleteRight(Tile* target_tile) {
             cout << "center: " << *center_tile;
             next_tile = (success_split) ? target_tile : target_tile->lb;
         }
-        //MergeTileRightward(center_tile);
-        //MergeTileLeftward(center_tile);
+        MergeTileRightward(center_tile);
+        MergeTileLeftward(center_tile);
         target_tile = next_tile;
     }
 }
