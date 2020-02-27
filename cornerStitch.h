@@ -15,7 +15,7 @@ public:
     bool AreaSearch(Rectangle area);
     bool TileCreate(Rectangle tile);
     void TileDelete(Rectangle tile);
-    void SplitTile_H(Tile& ori, int split_y); // split and create top, use ref tile rt.y as split
+    int SplitTile_H(Tile& ori, int split_y); // split and create top, use ref tile rt.y as split
     void SplitTile_V(Tile& ori, Rectangle& tile); // split and create left
     void EnumerateRight(Tile& ref_tile);
     void EnumerateAll();

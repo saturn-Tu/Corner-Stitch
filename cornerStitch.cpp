@@ -99,11 +99,11 @@ bool CornerStitchPlane::TileCreate(Rectangle tile) {
     cout << "FINISH create\n";
 }
 
-void CornerStitchPlane::SplitTile_H(Tile& ori, int split_y) {
+int CornerStitchPlane::SplitTile_H(Tile& ori, int split_y) {
     //cout << "in H\n";
     //cout << "ori: " << ori << "tile: " << tile;
     //if ( tile.rightTop.y == ori.rightTop.y ) return;
-    if ( split_y == ori.rightTop.y ) return;
+    if ( split_y == ori.rightTop.y ) return 0;
     Tile *new_tile = new Tile(ori.leftBottom.x, split_y, ori.rightTop.x, ori.rightTop.y, 0);
     new_tile->lb = &ori;
     // update left tile of origin tile
@@ -132,7 +132,8 @@ void CornerStitchPlane::SplitTile_H(Tile& ori, int split_y) {
         }  
         now_tile = now_tile->lb;
     }
-    if ( !now_tile )  ori.tr = now_tile;
+    if ( now_tile != 0 )  
+        ori.tr = now_tile;
     // update upper tile of origin tile
     now_tile = ori.rt;
     new_tile->rt = ori.rt;
@@ -147,6 +148,7 @@ void CornerStitchPlane::SplitTile_H(Tile& ori, int split_y) {
     ori.rt = new_tile;
     //cout << "output tile:\n";
     //cout << ori << *new_tile;
+    return 1;
 }
 
 void CornerStitchPlane::SplitTile_V(Tile& ori, Rectangle& tile) {
@@ -421,13 +423,12 @@ void CornerStitchPlane::MergeTileUpdate_H(Tile* tile_l, Tile* tile_r) {
 
 void CornerStitchPlane::TileDeleteRight(Tile* target_tile) {
     if (target_tile->type == 1) return;
-    Tile* right_tile = target_tile->tr;
     int y_lbound = target_tile->leftBottom.y;
     cout << "y: " << y_lbound << endl;
-    cout << "right_tile : " << *right_tile;
     while (target_tile && target_tile->leftBottom.y >= y_lbound) {
+        Tile* right_tile = target_tile->tr;
         // split right tile vertically
-        if (right_tile->type == 0 && right_tile->rightTop.y > target_tile->rightTop.y) {
+        /*if (right_tile->type == 0 && right_tile->rightTop.y > target_tile->rightTop.y) {
             cout << "split right\n";
             int split_y = target_tile->rightTop.y;
             this->SplitTile_H(*right_tile, split_y);
@@ -436,23 +437,18 @@ void CornerStitchPlane::TileDeleteRight(Tile* target_tile) {
             cout << "split right\n";
             int split_y = target_tile->leftBottom.y;
             this->SplitTile_H(*right_tile, split_y);
-        }
+        }*/
         // split target tile vertically
         Tile* center_tile = target_tile;
         Tile* next_tile = target_tile->lb;
         if (target_tile->leftBottom.y < right_tile->leftBottom.y) {
             cout << "split it self\n";
-            Rectangle rec_d(target_tile->leftBottom.x, target_tile->leftBottom.y, 
-                            right_tile->rightTop.x, right_tile->rightTop.y);
             int split_y = right_tile->leftBottom.y;
-            this->SplitTile_H(*target_tile, split_y);
+            int success_split = this->SplitTile_H(*target_tile, split_y);
             target_tile->rightTop.y = right_tile->leftBottom.y;
-            cout << "target_tile " << *target_tile;
             center_tile = target_tile->rt;
             cout << "center: " << *center_tile;
-            int a;
-            cin >> a;
-            next_tile = target_tile;
+            next_tile = (success_split) ? target_tile : target_tile->lb;
         }
         //MergeTileRightward(center_tile);
         //MergeTileLeftward(center_tile);
