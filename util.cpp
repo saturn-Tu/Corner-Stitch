@@ -12,6 +12,10 @@ bool Rectangle::InRectangle(Point target) {
     return target.x >= this->leftBottom.x && target.y >= this->leftBottom.y && target.x <= this->rightTop.x && target.y <= this->rightTop.y;    
 }
 
+int Rectangle::GetArea() {
+    return (rightTop.x-leftBottom.x)*(rightTop.y-leftBottom.y);
+}
+
 string Tile::ReturnOutlineString() {
     string s;
     if (this->type == 0)

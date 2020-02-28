@@ -40,6 +40,7 @@ public:
     bool InRectangle(Point target);
     bool operator==(const Rectangle& a);
     friend ostream &operator<<(ostream &s, Rectangle r); 
+    int GetArea();
 };
 
 class Tile: public Rectangle {
