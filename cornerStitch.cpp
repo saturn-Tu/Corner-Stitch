@@ -207,6 +207,8 @@ void CornerStitchPlane::EnumerateRight( Tile& ref_tile ) {
         if ( now_tile->bl != &ref_tile )  return;
         else {
             cout << "ENUMERATE: " << *now_tile;
+            if (now_tile->type == 1)
+                this->solid_area += now_tile->GetArea();
             this->EnumerateRight( *now_tile );
         }
         now_tile = now_tile->lb;
@@ -215,10 +217,13 @@ void CornerStitchPlane::EnumerateRight( Tile& ref_tile ) {
 
 void CornerStitchPlane::EnumerateAll() {
     //(0,100) is tmp
+    this->solid_area = 0;
     Point leftTop(this->leftBottom->x, this->rightTop->y);
     Tile *left_tile = this->PointFinding(leftTop, 0);
     while( left_tile ) {
         cout << "ENUMERATE: " << *left_tile;
+        if (left_tile->type == 1)
+            this->solid_area += left_tile->GetArea();
         this->EnumerateRight( *left_tile );
         left_tile = left_tile->lb;
     }

@@ -11,6 +11,7 @@ public:
     vector <Rectangle> rec_list;
     Tile *start_tile;
     Point *leftBottom, *rightTop;
+    int solid_area;
     Tile* PointFinding(Point target, Tile *ref_tile, bool downward=0);    
     bool AreaSearch(Rectangle area);
     bool TileCreate(Rectangle tile);
