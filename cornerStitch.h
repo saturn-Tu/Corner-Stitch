@@ -37,5 +37,6 @@ public:
     void MergeTileUpdate_H(Tile* tile_l, Tile* tile_r);
     void TileDeleteRight(Tile* target_tile);
     void SplitFitTile_V(Tile* ref, Tile* tar); // split tile according to ori tile
+    void TileDeleteLeft(Tile* neighbor_tile, int y_ubound);
 };
 #endif

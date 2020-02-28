@@ -331,6 +331,8 @@ void CornerStitchPlane::MergeTileUpdate_V(Tile* tile_l, Tile* tile_u) {
     tile_l->rt = tile_u->rt;
     tile_l->tr = tile_u->tr;
     tile_l->rightTop.y = tile_u->rightTop.y;
+    if (this->start_tile == tile_u)
+        this->start_tile = tile_l;
     delete(tile_u);
 }
 
@@ -388,12 +390,14 @@ void CornerStitchPlane::OutputSurrondingTile(ofstream& o_file, Tile* ref_tile) {
 void CornerStitchPlane::TileDelete(Rectangle tile) {
     Point middle_point( (tile.rightTop.x+tile.leftBottom.x)/2, (tile.rightTop.y+tile.leftBottom.y)/2 );
     Tile* target_tile = this->PointFinding(middle_point, 0);
+    int y_ubound = target_tile->rightTop.y;
     target_tile->type = 0;
     // handle right adjacent tile
     Tile* left_tile = target_tile->bl;
     cout << "tile: " << *target_tile;
     TileDeleteRight(target_tile);
-    
+    cout << "start left\n";
+    TileDeleteLeft(left_tile, y_ubound);
 }
 
 void CornerStitchPlane::MergeTileUpdate_H(Tile* tile_l, Tile* tile_r) {
@@ -418,6 +422,8 @@ void CornerStitchPlane::MergeTileUpdate_H(Tile* tile_l, Tile* tile_r) {
     tile_l->rt = tile_r->rt;
     tile_l->tr = tile_r->tr;
     tile_l->rightTop.x = tile_r->rightTop.x;
+    if (this->start_tile == tile_r)
+        this->start_tile = tile_l;
     delete(tile_r);
 }
 
@@ -456,5 +462,26 @@ void CornerStitchPlane::SplitFitTile_V(Tile* ref, Tile* tar) {
         int split_y = ref->leftBottom.y;
         this->SplitTile_H(*tar, split_y);
         tar->rightTop.y = split_y;
+    }
+}
+
+void CornerStitchPlane::TileDeleteLeft(Tile* neighbor_tile, int y_ubound) {
+    if (neighbor_tile == 0) return;
+    if (neighbor_tile->type == 1) return;
+    cout << "y: " << y_ubound << endl;
+    while (neighbor_tile && neighbor_tile->rightTop.y <= y_ubound) {
+        cout << "neighbor_tile " << *neighbor_tile;
+        Tile* next_tile = neighbor_tile->rt;
+        // split right tile vertically
+        Tile* right_tile = neighbor_tile->tr;
+        SplitFitTile_V(neighbor_tile, right_tile);
+        // split left tile vertically
+        Tile* left_tile = neighbor_tile->bl;
+        SplitFitTile_V(neighbor_tile, left_tile);
+        MergeTileRightward(neighbor_tile);
+        MergeTileLeftward(neighbor_tile);
+        MergeTileUpward(neighbor_tile);
+        MergeTileDownward(neighbor_tile);
+        neighbor_tile = next_tile;
     }
 }
