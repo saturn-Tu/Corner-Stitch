@@ -11,7 +11,9 @@ num_line=0
 print("line, ", line)
 x_list=[]
 y_list=[]
+count=0
 while line:
+    count = count+1
     line_split=line.split(" ")
     if line_split[0] == 'TILE':
         color_index = 1
@@ -19,9 +21,18 @@ while line:
         color_index = 0
     line_split.pop(0)
     line_split_f=[float(x) for x in line_split]
+    offset = [1,1,1,-1,-1,-1,-1,1,1,1]
+
+    # below 2 lines for clear debug
+    for i in range(0,len(line_split_f)):
+        line_split_f[i] = line_split_f[i]+offset[i]
+
     for i in range(0,len(line_split)-3,2):
         point = [(line_split_f[i], line_split_f[i+1]), (line_split_f[i+2], line_split_f[i+3])]
         (xpoint, ypoint) = zip(*point)
+        if count == 1:
+            fig.plot(xpoint, ypoint,'g')
+            continue
         if color_index == 1:
             x_list.append(xpoint)
             y_list.append(ypoint)
