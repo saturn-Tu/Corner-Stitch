@@ -425,36 +425,36 @@ void CornerStitchPlane::TileDeleteRight(Tile* target_tile) {
     if (target_tile->type == 1) return;
     int y_lbound = target_tile->leftBottom.y;
     cout << "y: " << y_lbound << endl;
-    while (target_tile && target_tile->leftBottom.y >= y_lbound) {
-        Tile* right_tile = target_tile->tr;
+    Tile* neighbor_tile = target_tile->tr;
+    while (neighbor_tile && neighbor_tile->leftBottom.y >= y_lbound) {
+        cout << "neighbor_tile " << *neighbor_tile;
+        Tile* next_tile = neighbor_tile->lb;
         // split right tile vertically
-        if (right_tile->type == 0 && right_tile->rightTop.y > target_tile->rightTop.y) {
-            cout << "split right\n";
-            int split_y = target_tile->rightTop.y;
-            this->SplitTile_H(*right_tile, split_y);
-            right_tile->rightTop.y = split_y;
-        }
-        if (right_tile->type == 0 && right_tile->leftBottom.y < target_tile->leftBottom.y) {
-            cout << "split right\n";
-            int split_y = target_tile->leftBottom.y;
-            this->SplitTile_H(*right_tile, split_y);
-            right_tile->rightTop.y = split_y;
-            right_tile = right_tile->rt;
-        }
-        // split target tile vertically
-        Tile* center_tile = target_tile;
-        Tile* next_tile = target_tile->lb;
-        if (target_tile->leftBottom.y < right_tile->leftBottom.y) {
-            cout << "split it self\n";
-            int split_y = right_tile->leftBottom.y;
-            int success_split = this->SplitTile_H(*target_tile, split_y);
-            target_tile->rightTop.y = right_tile->leftBottom.y;
-            center_tile = target_tile->rt;
-            cout << "center: " << *center_tile;
-            next_tile = (success_split) ? target_tile : target_tile->lb;
-        }
-        MergeTileRightward(center_tile);
-        MergeTileLeftward(center_tile);
-        target_tile = next_tile;
+        Tile* right_tile = neighbor_tile->tr;
+        SplitFitTile_V(neighbor_tile, right_tile);
+        // split left tile vertically
+        Tile* left_tile = neighbor_tile->bl;
+        SplitFitTile_V(neighbor_tile, left_tile);
+        MergeTileRightward(neighbor_tile);
+        MergeTileLeftward(neighbor_tile);
+        neighbor_tile = next_tile;
+    }
+}
+
+void CornerStitchPlane::SplitFitTile_V(Tile* ref, Tile* tar) {
+    if (ref == 0 || tar == 0) return;
+    cout << "\n" << *ref << *tar << endl;
+    // split right tile vertically
+    if (tar->type == 0 && tar->rightTop.y > ref->rightTop.y) {
+        cout << "split right\n";
+        int split_y = ref->rightTop.y;
+        this->SplitTile_H(*tar, split_y);
+        tar->rightTop.y = split_y;
+    }
+    if (tar->type == 0 && tar->leftBottom.y < ref->leftBottom.y) {
+        cout << "split right\n";
+        int split_y = ref->leftBottom.y;
+        this->SplitTile_H(*tar, split_y);
+        tar->rightTop.y = split_y;
     }
 }
