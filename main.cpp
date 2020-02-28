@@ -53,18 +53,33 @@ int main( int argc, char *argv[] ){
     plane.rightTop = new Point(max_x, max_y);
     cout << "Boundary:" << *plane.leftBottom << *plane.rightTop << endl;
     for ( auto rec : plane.rec_list) {
-        cout << rec;    
+        cout << rec; 
     }
+    // create tile
     plane.start_tile = new Tile(*plane.leftBottom, *plane.rightTop, 0);
     for ( auto rec : plane.rec_list ) {
         plane.TileCreate(rec);
         //cout << "\n\n\n*****finish once*****\n";
         //plane.EnumerateAll();
-        //cout << "\n\n\n";
-        //plane.OutputEnumerate("output.txt");
+        cout << "\nonce!\n\n";
+        plane.OutputSurrondingAll("tmp_output.txt");
+        plane.OutputEnumerate("output.txt");
     }
-
     cout << "After TileCreate\n";
+
+    // delete tile
+    for ( auto rec : plane.rec_list ) {
+        plane.TileDelete(rec);
+        cout << "d tile " << rec;
+        cout << "\ndelete once!\n\n";
+        plane.OutputSurrondingAll("tmp_output.txt");
+        cout << "after\n";
+        plane.OutputEnumerate("output.txt");
+        int a;
+        cin >> a;
+    }
+    cout << "outside\n";
+
     plane.OutputEnumerate("output.txt");
     //cout << *plane.start_tile;
     //plane.EnumerateAll();
