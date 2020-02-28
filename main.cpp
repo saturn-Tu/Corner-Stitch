@@ -56,25 +56,26 @@ int main( int argc, char *argv[] ){
         cout << rec; 
     }
     // create tile
+    int area_sum = 0, area_count = 0;
     plane.start_tile = new Tile(*plane.leftBottom, *plane.rightTop, 0);
     for ( auto rec : plane.rec_list ) {
-        plane.TileCreate(rec);
+        bool success_create = plane.TileCreate(rec);
+        area_sum = (success_create) ? area_sum+rec.GetArea() : area_sum;
+        area_count = (success_create) ? area_count+1 : area_count;
         //cout << "\n\n\n*****finish once*****\n";
         //plane.EnumerateAll();
         cout << "\nonce!\n\n";
     }
     cout << "After TileCreate\n";
 
-    int area_sum = 0;
-    for ( auto rec : plane.rec_list ) {
-        area_sum += rec.GetArea();
-    }
     plane.EnumerateAll();
     cout << "\nreal_sum: " << area_sum << endl;
     cout << "area_sum: " << plane.solid_area << endl;
-    bool areaPass = 0;
+    bool areaPass = 0, createCountPass = 0;
     if (area_sum == plane.solid_area)
         areaPass = 1;
+    if (area_count == plane.solid_count)
+        createCountPass = 1;
     // delete tile
     for ( auto rec : plane.rec_list ) {
         plane.TileDelete(rec);
@@ -85,12 +86,17 @@ int main( int argc, char *argv[] ){
         plane.OutputEnumerate("output.txt");
     }
     cout << "outside\n";
-
+    plane.EnumerateAll();
+    int deletePass = 0;
+    if (plane.solid_count == 0 && plane.start_tile->type == 0)
+        deletePass = 1;
     plane.OutputEnumerate("output.txt");
     //cout << *plane.start_tile;
     //plane.EnumerateAll();
     cout << "Done\n";
     cout << "\n\n------------------------------------\n";
-    cout << "AreaPass:\t" << areaPass << endl;
+    cout << "AreaPass:\t\t" << areaPass << endl;
+    cout << "CreateCountPass:\t" << createCountPass << endl;
+    cout << "DeletePass:\t\t" << deletePass << endl;
     return 0;
 }
