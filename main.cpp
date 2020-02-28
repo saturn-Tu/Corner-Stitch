@@ -62,11 +62,19 @@ int main( int argc, char *argv[] ){
         //cout << "\n\n\n*****finish once*****\n";
         //plane.EnumerateAll();
         cout << "\nonce!\n\n";
-        plane.OutputSurrondingAll("tmp_output.txt");
-        plane.OutputEnumerate("output.txt");
     }
     cout << "After TileCreate\n";
 
+    int area_sum = 0;
+    for ( auto rec : plane.rec_list ) {
+        area_sum += rec.GetArea();
+    }
+    plane.EnumerateAll();
+    cout << "\nreal_sum: " << area_sum << endl;
+    cout << "area_sum: " << plane.solid_area << endl;
+    bool areaPass = 0;
+    if (area_sum == plane.solid_area)
+        areaPass = 1;
     // delete tile
     for ( auto rec : plane.rec_list ) {
         plane.TileDelete(rec);
@@ -75,8 +83,6 @@ int main( int argc, char *argv[] ){
         plane.OutputSurrondingAll("tmp_output.txt");
         cout << "after\n";
         plane.OutputEnumerate("output.txt");
-        int a;
-        cin >> a;
     }
     cout << "outside\n";
 
@@ -84,5 +90,7 @@ int main( int argc, char *argv[] ){
     //cout << *plane.start_tile;
     //plane.EnumerateAll();
     cout << "Done\n";
+    cout << "\n\n------------------------------------\n";
+    cout << "AreaPass:\t" << areaPass << endl;
     return 0;
 }
