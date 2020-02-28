@@ -64,7 +64,7 @@ int main( int argc, char *argv[] ){
         area_count = (success_create) ? area_count+1 : area_count;
         //cout << "\n\n\n*****finish once*****\n";
         //plane.EnumerateAll();
-        cout << "\nonce!\n\n";
+        cout << "once!\n";
     }
     cout << "After TileCreate\n";
 
@@ -79,13 +79,10 @@ int main( int argc, char *argv[] ){
     // delete tile
     for ( auto rec : plane.rec_list ) {
         plane.TileDelete(rec);
-        cout << "d tile " << rec;
-        cout << "\ndelete once!\n\n";
+        cout << "delete once!\n";
         plane.OutputSurrondingAll("tmp_output.txt");
-        cout << "after\n";
         plane.OutputEnumerate("output.txt");
     }
-    cout << "outside\n";
     plane.EnumerateAll();
     int deletePass = 0;
     if (plane.solid_count == 0 && plane.start_tile->type == 0)

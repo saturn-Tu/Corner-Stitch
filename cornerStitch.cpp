@@ -96,7 +96,6 @@ bool CornerStitchPlane::TileCreate(Rectangle tile) {
         }
     }
     MergeNeighborSpaceTile_V(solid_tile);
-    cout << "FINISH create\n";
     return 1;
 }
 
@@ -405,9 +404,7 @@ void CornerStitchPlane::TileDelete(Rectangle tile) {
     target_tile->type = 0;
     // handle right adjacent tile
     Tile* left_tile = target_tile->bl;
-    cout << "tile: " << *target_tile;
     TileDeleteRight(target_tile);
-    cout << "start left\n";
     TileDeleteLeft(left_tile, y_ubound);
 }
 
@@ -441,10 +438,8 @@ void CornerStitchPlane::MergeTileUpdate_H(Tile* tile_l, Tile* tile_r) {
 void CornerStitchPlane::TileDeleteRight(Tile* target_tile) {
     if (target_tile->type == 1) return;
     int y_lbound = target_tile->leftBottom.y;
-    cout << "y: " << y_lbound << endl;
     Tile* neighbor_tile = target_tile->tr;
     while (neighbor_tile && neighbor_tile->leftBottom.y >= y_lbound) {
-        cout << "neighbor_tile " << *neighbor_tile;
         Tile* next_tile = neighbor_tile->lb;
         // split right tile vertically
         Tile* right_tile = neighbor_tile->tr;
@@ -460,16 +455,13 @@ void CornerStitchPlane::TileDeleteRight(Tile* target_tile) {
 
 void CornerStitchPlane::SplitFitTile_V(Tile* ref, Tile* tar) {
     if (ref == 0 || tar == 0) return;
-    cout << "\n" << *ref << *tar << endl;
     // split right tile vertically
     if (tar->type == 0 && tar->rightTop.y > ref->rightTop.y) {
-        cout << "split right\n";
         int split_y = ref->rightTop.y;
         this->SplitTile_H(*tar, split_y);
         tar->rightTop.y = split_y;
     }
     if (tar->type == 0 && tar->leftBottom.y < ref->leftBottom.y) {
-        cout << "split right\n";
         int split_y = ref->leftBottom.y;
         this->SplitTile_H(*tar, split_y);
         tar->rightTop.y = split_y;
@@ -479,9 +471,7 @@ void CornerStitchPlane::SplitFitTile_V(Tile* ref, Tile* tar) {
 void CornerStitchPlane::TileDeleteLeft(Tile* neighbor_tile, int y_ubound) {
     if (neighbor_tile == 0) return;
     if (neighbor_tile->type == 1) return;
-    cout << "y: " << y_ubound << endl;
     while (neighbor_tile && neighbor_tile->rightTop.y <= y_ubound) {
-        cout << "neighbor_tile " << *neighbor_tile;
         Tile* next_tile = neighbor_tile->rt;
         // split right tile vertically
         Tile* right_tile = neighbor_tile->tr;
