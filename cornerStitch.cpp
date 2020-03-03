@@ -121,6 +121,7 @@ int CornerStitchPlane::SplitTile_H(Tile& ori, int split_y) {
     // update left tile of origin tile
     bool left_flag = 0;
     Tile *now_tile = ori.bl;
+    new_tile->bl = ori.bl;
     while ( now_tile && now_tile->rightTop.y <= ori.rightTop.y ) {
         if ( now_tile->rightTop.y > new_tile->leftBottom.y ) {
             if ( !left_flag ) {
@@ -134,32 +135,23 @@ int CornerStitchPlane::SplitTile_H(Tile& ori, int split_y) {
     // update right tile of origin tile
     bool right_flag = 0;
     now_tile = ori.tr;
+    new_tile->tr = ori.tr;
     while ( now_tile && now_tile->leftBottom.y >= new_tile->leftBottom.y ) {
-        if ( now_tile->rightTop.y >= new_tile->leftBottom.y ) {
-            if ( !right_flag ) {
-                right_flag = 1;
-                new_tile->tr = now_tile;
-            }
-            now_tile->bl = new_tile;    
-        }  
+        now_tile->bl = new_tile;    
         now_tile = now_tile->lb;
     }
-    if ( now_tile != 0 )  
-        ori.tr = now_tile;
+    ori.tr = now_tile;
     // update upper tile of origin tile
     now_tile = ori.rt;
     new_tile->rt = ori.rt;
-    //if ( !ori.rt ) cout << "\t\tERROR!!!!!\n";
     while ( now_tile && now_tile->leftBottom.x >= new_tile->leftBottom.x ) {
         //cout << "***Bottom now_tile: " << now_tile;
-        if ( now_tile->leftBottom.x >= new_tile->leftBottom.x ) {
-            now_tile->lb = new_tile;    
-        }       
+        now_tile->lb = new_tile;       
         now_tile = now_tile->bl;
     }
     ori.rt = new_tile;
     //cout << "output tile:\n";
-    //cout << ori << *new_tile;
+    cout << "ori " << ori << "new " << *new_tile;
     return 1;
 }
 
@@ -180,12 +172,11 @@ void CornerStitchPlane::SplitTile_V(Tile& ori, Rectangle& tile) {
         now_tile = now_tile->tr;
     }
 
-    if ( now_tile != 0 ) {
-        ori.lb = now_tile;
-    }
+    ori.lb = now_tile;
     // update top tile of origin tile
     bool top_flag = 0;
     now_tile = ori.rt;
+    new_tile->rt = ori.rt;
     while ( now_tile && now_tile->rightTop.x >= new_tile->leftBottom.x ) {
         if ( now_tile->leftBottom.x < new_tile->rightTop.x ) {
             if ( !top_flag ) {
