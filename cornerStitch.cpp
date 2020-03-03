@@ -444,8 +444,11 @@ void CornerStitchPlane::MergeTileUpdate_H(Tile* tile_l, Tile* tile_r) {
 void CornerStitchPlane::TileDeleteRight(Tile* target_tile) {
     if (target_tile->type == 1) return;
     int y_lbound = target_tile->leftBottom.y;
+    bool v_merge_tile = (target_tile->bl==0);
     Tile* neighbor_tile = target_tile->tr;
     while (neighbor_tile && neighbor_tile->leftBottom.y >= y_lbound) {
+        Point middle_point( (neighbor_tile->rightTop.x+neighbor_tile->leftBottom.x)/2, 
+                        (neighbor_tile->rightTop.y+neighbor_tile->leftBottom.y)/2 );
         Tile* next_tile = neighbor_tile->lb;
         // split right tile vertically
         Tile* right_tile = neighbor_tile->tr;
@@ -455,6 +458,11 @@ void CornerStitchPlane::TileDeleteRight(Tile* target_tile) {
         SplitFitTile_V(neighbor_tile, left_tile);
         MergeTileRightward(neighbor_tile);
         MergeTileLeftward(neighbor_tile);
+        if (v_merge_tile) {
+            Tile* neighbor_tile = this->PointFinding(middle_point, 0);
+            MergeTileUpward(neighbor_tile);
+            MergeTileDownward(neighbor_tile);
+        }
         neighbor_tile = next_tile;
     }
 }
