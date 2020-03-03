@@ -6,7 +6,7 @@ Tile* CornerStitchPlane::PointFinding(Point target, Tile *ref_tile, bool downwar
     // use ref_tile to save search time
     now_rec = (ref_tile) ? ref_tile : start_tile;
     while( !now_rec->InTile(target, downward) ) {
-        //cout << "pointfinding " << *now_rec;
+        // cout << direction << " pointfinding " << *now_rec;
         if ( direction ) {  
             if ( target.x > now_rec->rightTop.x )
                 now_rec = now_rec->tr;
@@ -29,8 +29,10 @@ Tile* CornerStitchPlane::PointFinding(Point target, Tile *ref_tile, bool downwar
 }
 
 bool CornerStitchPlane::AreaSearch(Rectangle area) {
-    Point leftTop(area.leftBottom.x+1, area.rightTop.y);
+    Point leftTop(area.leftBottom.x+1, area.rightTop.y-1);
     Tile *now_rec = this->PointFinding(leftTop, 0);
+    if ( now_rec && now_rec->type ) return 0;
+    if ( now_rec && now_rec->rightTop.x < area.rightTop.x ) return 0;
     while( now_rec && now_rec->leftBottom.y >= area.leftBottom.y ) {
         while ( now_rec->rightTop.x < area.leftBottom.x ) {
             now_rec = now_rec->tr;    
@@ -44,11 +46,21 @@ bool CornerStitchPlane::AreaSearch(Rectangle area) {
 bool CornerStitchPlane::TileCreate(Rectangle tile) {
     if ( !AreaSearch(tile) )  return 0;
     // Split top space tile
-    Tile *top_tile = this->PointFinding(tile.rightTop, 0);
+    cout << "start pointfinding\n";
+    Point tmp_rt(tile.rightTop.x-1, tile.rightTop.y-1);
+    Tile *top_tile = this->PointFinding(tmp_rt, 0);
+    cout << "top tile: " << *top_tile;
+    cout << "after pointfinding u\n";
     this->SplitTile_H(*top_tile, tile.rightTop.y);
     top_tile->rightTop.y = tile.rightTop.y;
     // Split bottom space tile
-    Tile *bottom_tile = this->PointFinding(tile.leftBottom, top_tile, 1);
+    cout << "start pointfinding\n";
+
+    //OutputSurrondingAll("tmp_output.txt");
+    Point tmp_lb(tile.leftBottom.x+1, tile.leftBottom.y+1);
+    Tile *bottom_tile = this->PointFinding(tmp_lb, top_tile, 1);
+    cout << "lower tile: " << *bottom_tile;
+    cout << "after pointfinding b\n";
     //cout << "Bottom tile: " << *bottom_tile;
     //Rectangle tmp_bottom(tile.leftBottom.x, bottom_tile->leftBottom.y, tile.rightTop.x, );
     int split_y = tile.leftBottom.y;
@@ -388,13 +400,13 @@ void CornerStitchPlane::OutputSurronding(ofstream& o_file, Tile& ref_tile) {
 
 void CornerStitchPlane::OutputSurrondingTile(ofstream& o_file, Tile* ref_tile) {
     if (ref_tile->tr != 0) 
-        o_file << ref_tile->tr->ReturnOutlineString();
+        o_file << "r: " << ref_tile->tr->ReturnOutlineString();
     if (ref_tile->rt != 0) 
-        o_file << ref_tile->rt->ReturnOutlineString();
+        o_file << "t: " << ref_tile->rt->ReturnOutlineString();
     if (ref_tile->bl != 0) 
-        o_file << ref_tile->bl->ReturnOutlineString();
+        o_file << "l: " << ref_tile->bl->ReturnOutlineString();
     if (ref_tile->lb != 0) 
-        o_file << ref_tile->lb->ReturnOutlineString();
+        o_file << "b: " << ref_tile->lb->ReturnOutlineString();
 }
 
 void CornerStitchPlane::TileDelete(Rectangle tile) {
