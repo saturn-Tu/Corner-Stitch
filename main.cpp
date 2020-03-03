@@ -60,16 +60,18 @@ int main( int argc, char *argv[] ){
     int c_count = 0;
     plane.start_tile = new Tile(*plane.leftBottom, *plane.rightTop, 0);
     for ( auto rec : plane.rec_list ) {
+        cout << "tile: " << rec;
         bool success_create = plane.TileCreate(rec);
         area_sum = (success_create) ? area_sum+rec.GetArea() : area_sum;
         area_count = (success_create) ? area_count+1 : area_count;
-        //cout << "\n\n\n*****finish once*****\n";
         //plane.EnumerateAll();
         cout << "once! " << area_count << " " << c_count++ << "\n";
     }
     cout << "After TileCreate\n";
 
     plane.EnumerateAll();
+    int conpute_area = plane.solid_area;
+    int compute_count = plane.solid_count;
     cout << "\nreal_sum: " << area_sum << endl;
     cout << "area_sum: " << plane.solid_area << endl;
     bool areaPass = 0, createCountPass = 0;
@@ -94,7 +96,12 @@ int main( int argc, char *argv[] ){
     cout << "Done\n";
     cout << "\n\n------------------------------------\n";
     cout << "AreaPass:\t\t" << areaPass << endl;
+    cout << "real " << area_sum << endl;
+    cout << "copt " << conpute_area << endl;
     cout << "CreateCountPass:\t" << createCountPass << endl;
+    cout << "real " << area_count << endl;
+    cout << "copt " << compute_count << endl;
     cout << "DeletePass:\t\t" << deletePass << endl;
+
     return 0;
 }
