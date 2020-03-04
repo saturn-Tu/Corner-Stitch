@@ -36,8 +36,8 @@ public:
     void OutputSurrondingTile(ofstream& o_file, Tile* ref_tile);
     // merge right tile to left tile
     void MergeTileUpdate_H(Tile* tile_l, Tile* tile_r);
-    void TileDeleteRight(Tile* target_tile);
-    void SplitFitTile_V(Tile* ref, Tile* tar); // split tile according to ori tile
+    void TileDeleteRight(Tile* target_tile, bool from_left=0);
+    void SplitFitTile_V(Tile* ref, Tile* tar); // split tile according to ref tile
     void TileDeleteLeft(Tile* neighbor_tile, int y_ubound);
 };
 #endif

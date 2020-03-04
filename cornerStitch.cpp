@@ -122,13 +122,14 @@ int CornerStitchPlane::SplitTile_H(Tile& ori, int split_y) {
     bool left_flag = 0;
     Tile *now_tile = ori.bl;
     new_tile->bl = ori.bl;
-    while ( now_tile && now_tile->rightTop.y <= ori.rightTop.y ) {
+    while ( now_tile && now_tile->leftBottom.y <= ori.rightTop.y ) {
         if ( now_tile->rightTop.y > new_tile->leftBottom.y ) {
             if ( !left_flag ) {
                 left_flag = 1;
                 new_tile->bl = now_tile;
             }
-            now_tile->tr = new_tile;    
+            if ( now_tile->rightTop.y <= new_tile->rightTop.y )
+                now_tile->tr = new_tile;    
         }       
         now_tile = now_tile->rt;
     }
@@ -209,7 +210,8 @@ void CornerStitchPlane::EnumerateRight( Tile& ref_tile ) {
         //  not to enumerate
         if ( now_tile->bl != &ref_tile )  return;
         else {
-            cout << "ENUMERATE: " << *now_tile;
+            //cout << "ENUMERATE: " << *now_tile;
+            cout << now_tile->ReturnOutlineString();
             if (now_tile->type == 1) {
                 this->solid_area += now_tile->GetArea();
                 this->solid_count++;
@@ -227,7 +229,8 @@ void CornerStitchPlane::EnumerateAll() {
     Point leftTop(this->leftBottom->x+1, this->rightTop->y-1);
     Tile *left_tile = this->PointFinding(leftTop, 0);
     while( left_tile ) {
-        cout << "ENUMERATE: " << *left_tile;
+        //cout << "ENUMERATE: " << *left_tile;
+        cout << left_tile->ReturnOutlineString();
         if (left_tile->type == 1) {
             this->solid_area += left_tile->GetArea();
             this->solid_count++;
@@ -441,29 +444,32 @@ void CornerStitchPlane::MergeTileUpdate_H(Tile* tile_l, Tile* tile_r) {
     delete(tile_r);
 }
 
-void CornerStitchPlane::TileDeleteRight(Tile* target_tile) {
+void CornerStitchPlane::TileDeleteRight(Tile* target_tile, bool from_left) {
     if (target_tile->type == 1) return;
     int y_lbound = target_tile->leftBottom.y;
     bool v_merge_tile = (target_tile->bl==0);
-    Tile* neighbor_tile = target_tile->tr;
-    while (neighbor_tile && neighbor_tile->leftBottom.y >= y_lbound) {
-        Point middle_point( (neighbor_tile->rightTop.x+neighbor_tile->leftBottom.x)/2, 
-                        (neighbor_tile->rightTop.y+neighbor_tile->leftBottom.y)/2 );
-        Tile* next_tile = neighbor_tile->lb;
+    Point middle_point( (target_tile->rightTop.x+target_tile->leftBottom.x)/2, 
+                        (target_tile->rightTop.y+target_tile->leftBottom.y)/2 );
+    while (target_tile && target_tile->leftBottom.y >= y_lbound) {
+        int y_record = target_tile->rightTop.y;
         // split right tile vertically
-        Tile* right_tile = neighbor_tile->tr;
-        SplitFitTile_V(neighbor_tile, right_tile);
-        // split left tile vertically
-        Tile* left_tile = neighbor_tile->bl;
-        SplitFitTile_V(neighbor_tile, left_tile);
-        MergeTileRightward(neighbor_tile);
-        MergeTileLeftward(neighbor_tile);
-        if (v_merge_tile) {
-            Tile* neighbor_tile = this->PointFinding(middle_point, 0);
-            MergeTileUpward(neighbor_tile);
-            MergeTileDownward(neighbor_tile);
+        Tile* right_tile = target_tile->tr;
+        SplitFitTile_V(target_tile, right_tile);
+        // split dead tile vertically
+        SplitFitTile_V(target_tile->tr,target_tile);
+        // find real target_tile because after split will offset
+        if (target_tile->rightTop.y < y_record) {
+            target_tile = target_tile->rt;
         }
-        neighbor_tile = next_tile;
+        Tile* next_tile = target_tile->lb;
+        MergeTileRightward(target_tile);
+        MergeTileLeftward(target_tile);
+        target_tile = next_tile;
+    }
+    if (from_left || (!from_left&&v_merge_tile)) {
+        Tile* neighbor_tile = this->PointFinding(middle_point, 0);
+        MergeTileUpward(neighbor_tile);
+        MergeTileDownward(neighbor_tile);
     }
 }
 
@@ -487,16 +493,7 @@ void CornerStitchPlane::TileDeleteLeft(Tile* neighbor_tile, int y_ubound) {
     if (neighbor_tile->type == 1) return;
     while (neighbor_tile && neighbor_tile->rightTop.y <= y_ubound) {
         Tile* next_tile = neighbor_tile->rt;
-        // split right tile vertically
-        Tile* right_tile = neighbor_tile->tr;
-        SplitFitTile_V(neighbor_tile, right_tile);
-        // split left tile vertically
-        Tile* left_tile = neighbor_tile->bl;
-        SplitFitTile_V(neighbor_tile, left_tile);
-        MergeTileRightward(neighbor_tile);
-        MergeTileLeftward(neighbor_tile);
-        MergeTileUpward(neighbor_tile);
-        MergeTileDownward(neighbor_tile);
+        TileDeleteRight(neighbor_tile, 1);
         neighbor_tile = next_tile;
     }
 }
