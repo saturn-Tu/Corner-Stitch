@@ -66,7 +66,7 @@ bool CornerStitchPlane::TileCreate(Rectangle tile) {
     //cout << "after hori\n"; 
     //this->EnumerateAll();
     // Split V  tile
-    Tile *middle_tile = this->PointFinding(tile.rightTop, 0);
+    Tile *middle_tile = this->PointFinding(tmp_rt, 0);
     Tile *solid_tile; // record solid tile for neighbor space tile merging
     // Find tile for split
     while ( middle_tile && middle_tile->leftBottom.y >= tile.leftBottom.y ){ 
