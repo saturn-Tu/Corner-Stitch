@@ -33,7 +33,7 @@ bool CornerStitchPlane::AreaSearch(Rectangle area) {
     Tile *now_rec = this->PointFinding(leftTop, 0);
     if ( now_rec && now_rec->type ) return 0;
     if ( now_rec && now_rec->rightTop.x < area.rightTop.x ) return 0;
-    while( now_rec && now_rec->leftBottom.y >= area.leftBottom.y ) {
+    while( now_rec && now_rec->rightTop.y >= area.leftBottom.y ) {
         while ( now_rec->rightTop.x < area.leftBottom.x ) {
             now_rec = now_rec->tr;    
         }
@@ -46,21 +46,15 @@ bool CornerStitchPlane::AreaSearch(Rectangle area) {
 bool CornerStitchPlane::TileCreate(Rectangle tile) {
     if ( !AreaSearch(tile) )  return 0;
     // Split top space tile
-    cout << "start pointfinding\n";
     Point tmp_rt(tile.rightTop.x-1, tile.rightTop.y-1);
     Tile *top_tile = this->PointFinding(tmp_rt, 0);
-    cout << "top tile: " << *top_tile;
-    cout << "after pointfinding u\n";
     this->SplitTile_H(*top_tile, tile.rightTop.y);
     top_tile->rightTop.y = tile.rightTop.y;
     // Split bottom space tile
-    cout << "start pointfinding\n";
 
     //OutputSurrondingAll("tmp_output.txt");
     Point tmp_lb(tile.leftBottom.x+1, tile.leftBottom.y+1);
     Tile *bottom_tile = this->PointFinding(tmp_lb, top_tile, 1);
-    cout << "lower tile: " << *bottom_tile;
-    cout << "after pointfinding b\n";
     //cout << "Bottom tile: " << *bottom_tile;
     //Rectangle tmp_bottom(tile.leftBottom.x, bottom_tile->leftBottom.y, tile.rightTop.x, );
     int split_y = tile.leftBottom.y;
@@ -152,7 +146,6 @@ int CornerStitchPlane::SplitTile_H(Tile& ori, int split_y) {
     }
     ori.rt = new_tile;
     //cout << "output tile:\n";
-    cout << "ori " << ori << "new " << *new_tile;
     return 1;
 }
 
@@ -211,7 +204,7 @@ void CornerStitchPlane::EnumerateRight( Tile& ref_tile ) {
         if ( now_tile->bl != &ref_tile )  return;
         else {
             //cout << "ENUMERATE: " << *now_tile;
-            cout << now_tile->ReturnOutlineString();
+            //cout << now_tile->ReturnOutlineString();
             if (now_tile->type == 1) {
                 this->solid_area += now_tile->GetArea();
                 this->solid_count++;
@@ -230,7 +223,7 @@ void CornerStitchPlane::EnumerateAll() {
     Tile *left_tile = this->PointFinding(leftTop, 0);
     while( left_tile ) {
         //cout << "ENUMERATE: " << *left_tile;
-        cout << left_tile->ReturnOutlineString();
+        //cout << left_tile->ReturnOutlineString();
         if (left_tile->type == 1) {
             this->solid_area += left_tile->GetArea();
             this->solid_count++;
