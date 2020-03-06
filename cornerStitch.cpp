@@ -312,6 +312,7 @@ void CornerStitchPlane::MergeTileLeftward(Tile* tile) {
             tile = left_tile;
             left_tile = tmp;
             MergeTileUpdate_H(tile, left_tile);
+            return;
         }
         else break;
         left_tile = tile->bl;
@@ -456,7 +457,8 @@ void CornerStitchPlane::TileDeleteRight(Tile* target_tile, bool from_left) {
         }
         Tile* next_tile = target_tile->lb;
         MergeTileRightward(target_tile);
-        MergeTileLeftward(target_tile);
+        if (from_left)
+            MergeTileLeftward(target_tile);
         target_tile = next_tile;
     }
     if (from_left || (!from_left&&v_merge_tile)) {
