@@ -16,6 +16,14 @@ public:
     friend ostream& operator<<(ostream &s, Point p);
 };
 
+class F_Point {
+public:
+    F_Point(){}
+    F_Point(double x, double y):x(x), y(y){}
+    double x, y;
+    bool operator==(const F_Point& a);
+};
+
 class Rectangle {
 public:
     Rectangle();
@@ -65,7 +73,7 @@ public:
     }
     bool type; //0:space, 1:solid
     Tile *bl, *lb, *rt, *tr;
-    bool InTile(Point target, bool downward);
+    bool InTile(F_Point target, bool downward);
     string ReturnOutlineString();
 };
 

@@ -1,6 +1,6 @@
 #include "cornerStitch.h"
 
-Tile* CornerStitchPlane::PointFinding(Point target, Tile *ref_tile, bool downward) {
+Tile* CornerStitchPlane::PointFinding(F_Point target, Tile *ref_tile, bool downward) {
     bool direction = 0; //0: vertical 1:horizontal 
     Tile *now_rec = start_tile;
     // use ref_tile to save search time
@@ -29,7 +29,7 @@ Tile* CornerStitchPlane::PointFinding(Point target, Tile *ref_tile, bool downwar
 }
 
 bool CornerStitchPlane::AreaSearch(Rectangle area) {
-    Point leftTop(area.leftBottom.x+1, area.rightTop.y-1);
+    F_Point leftTop(area.leftBottom.x+0.5, area.rightTop.y-0.5);
     Tile *now_rec = this->PointFinding(leftTop, 0);
     if ( now_rec && now_rec->type ) return 0;
     if ( now_rec && now_rec->rightTop.x < area.rightTop.x ) return 0;
@@ -46,14 +46,14 @@ bool CornerStitchPlane::AreaSearch(Rectangle area) {
 bool CornerStitchPlane::TileCreate(Rectangle tile) {
     if ( !AreaSearch(tile) )  return 0;
     // Split top space tile
-    Point tmp_rt(tile.rightTop.x-1, tile.rightTop.y-1);
+    F_Point tmp_rt(tile.rightTop.x-0.5, tile.rightTop.y-0.5);
     Tile *top_tile = this->PointFinding(tmp_rt, 0);
     this->SplitTile_H(*top_tile, tile.rightTop.y);
     top_tile->rightTop.y = tile.rightTop.y;
     // Split bottom space tile
 
     //OutputSurrondingAll("tmp_output.txt");
-    Point tmp_lb(tile.leftBottom.x+1, tile.leftBottom.y+1);
+    F_Point tmp_lb(tile.leftBottom.x+0.5, tile.leftBottom.y+0.5);
     Tile *bottom_tile = this->PointFinding(tmp_lb, top_tile, 1);
     //cout << "Bottom tile: " << *bottom_tile;
     //Rectangle tmp_bottom(tile.leftBottom.x, bottom_tile->leftBottom.y, tile.rightTop.x, );
@@ -219,7 +219,7 @@ void CornerStitchPlane::EnumerateAll() {
     //(0,100) is tmp
     this->solid_area = 0;
     this->solid_count = 0;
-    Point leftTop(this->leftBottom->x+1, this->rightTop->y-1);
+    F_Point leftTop(this->leftBottom->x+0.5, this->rightTop->y-0.5);
     Tile *left_tile = this->PointFinding(leftTop, 0);
     while( left_tile ) {
         //cout << "ENUMERATE: " << *left_tile;
@@ -236,7 +236,7 @@ void CornerStitchPlane::EnumerateAll() {
 void CornerStitchPlane::OutputEnumerate(string filename) {
     ofstream o_file;
     o_file.open(filename);
-    Point leftTop(this->leftBottom->x+1, this->rightTop->y-1);
+    F_Point leftTop(this->leftBottom->x+0.5, this->rightTop->y-0.5);
     Tile *left_tile = this->PointFinding(leftTop, 0);
     while( left_tile ) {
         o_file << left_tile->ReturnOutlineString();
@@ -360,7 +360,7 @@ void CornerStitchPlane::MergeNeighborSpaceTile_V(Tile* tile) {
 void CornerStitchPlane::OutputSurrondingAll(string filename) {
     ofstream o_file;
     o_file.open(filename);
-    Point leftTop(this->leftBottom->x, this->rightTop->y);
+    F_Point leftTop(this->leftBottom->x+0.5, this->rightTop->y-0.5);
     Tile *left_tile = this->PointFinding(leftTop, 0);
     while( left_tile ) {
         o_file << "\n" << left_tile->ReturnOutlineString();
@@ -398,7 +398,7 @@ void CornerStitchPlane::OutputSurrondingTile(ofstream& o_file, Tile* ref_tile) {
 }
 
 void CornerStitchPlane::TileDelete(Rectangle tile) {
-    Point middle_point( (tile.rightTop.x+tile.leftBottom.x)/2, (tile.rightTop.y+tile.leftBottom.y)/2 );
+    F_Point middle_point( (tile.rightTop.x+tile.leftBottom.x)/2, (tile.rightTop.y+tile.leftBottom.y)/2 );
     Tile* target_tile = this->PointFinding(middle_point, 0);
     if (!(tile.rightTop == target_tile->rightTop && tile.leftBottom == target_tile->leftBottom))
         return;
@@ -442,7 +442,7 @@ void CornerStitchPlane::TileDeleteRight(Tile* target_tile, bool from_left) {
     if (target_tile->type == 1) return;
     int y_lbound = target_tile->leftBottom.y;
     bool v_merge_tile = (target_tile->bl==0);
-    Point middle_point( (target_tile->rightTop.x+target_tile->leftBottom.x)/2, 
+    F_Point middle_point( (target_tile->rightTop.x+target_tile->leftBottom.x)/2, 
                         (target_tile->rightTop.y+target_tile->leftBottom.y)/2 );
     while (target_tile && target_tile->leftBottom.y >= y_lbound) {
         int y_record = target_tile->rightTop.y;

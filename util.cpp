@@ -45,7 +45,7 @@ string Tile::ReturnOutlineString() {
     return s;
 }
 
-bool Tile::InTile(Point target, bool downward) {
+bool Tile::InTile(F_Point target, bool downward) {
     if ( !this->lb && !this->bl ) // touch left corner
         return target.x >= this->leftBottom.x && target.y >= this->leftBottom.y && target.x <= this->rightTop.x && target.y <= this->rightTop.y;    
     else if ( !this->lb ) // touch botton edge

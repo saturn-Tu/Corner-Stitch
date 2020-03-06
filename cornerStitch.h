@@ -12,7 +12,7 @@ public:
     Tile *start_tile;
     Point *leftBottom, *rightTop;
     int solid_area, solid_count;
-    Tile* PointFinding(Point target, Tile *ref_tile, bool downward=0);    
+    Tile* PointFinding(F_Point target, Tile *ref_tile, bool downward=0);    
     bool AreaSearch(Rectangle area);
     bool TileCreate(Rectangle tile);
     void TileDelete(Rectangle tile);
