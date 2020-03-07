@@ -398,7 +398,7 @@ void CornerStitchPlane::OutputSurrondingTile(ofstream& o_file, Tile* ref_tile) {
 }
 
 void CornerStitchPlane::TileDelete(Rectangle tile) {
-    F_Point tmp_lt(this->leftBottom->x+0.5, this->rightTop->y-0.5);
+    F_Point tmp_lt(tile.leftBottom.x+0.5, tile.rightTop.y-0.5);
     Tile* target_tile = this->PointFinding(tmp_lt, 0);
     if (!(tile.rightTop == target_tile->rightTop && tile.leftBottom == target_tile->leftBottom))
         return;
@@ -442,7 +442,7 @@ void CornerStitchPlane::TileDeleteRight(Tile* target_tile, bool from_left) {
     if (target_tile->type == 1) return;
     int y_lbound = target_tile->leftBottom.y;
     bool v_merge_tile = (target_tile->bl==0);
-    F_Point tmp_lt(this->leftBottom->x+0.5, this->rightTop->y-0.5);
+    F_Point tmp_lt(target_tile->leftBottom.x+0.5, target_tile->rightTop.y-0.5);
     while (target_tile && target_tile->leftBottom.y >= y_lbound) {
         int y_record = target_tile->rightTop.y;
         // split right tile vertically
