@@ -462,7 +462,8 @@ void CornerStitchPlane::TileDeleteRight(Tile* target_tile, bool from_left) {
     if (from_left || (!from_left&&v_merge_tile)) {
         Tile* neighbor_tile = this->PointFinding(tmp_lt, 0);
         while (neighbor_tile && neighbor_tile->leftBottom.y >= y_lbound) {
-            MergeTileUpward(neighbor_tile);
+            if (!from_left&&v_merge_tile) // from left do not MergeUpper cuz will affect DeleteLeft nextTile
+                MergeTileUpward(neighbor_tile);
             MergeTileDownward(neighbor_tile);
             neighbor_tile = neighbor_tile->lb;
         }
@@ -487,9 +488,18 @@ void CornerStitchPlane::SplitFitTile_V(Tile* ref, Tile* tar) {
 void CornerStitchPlane::TileDeleteLeft(Tile* neighbor_tile, int y_ubound) {
     if (neighbor_tile == 0) return;
     if (neighbor_tile->type == 1) return;
-    while (neighbor_tile && neighbor_tile->rightTop.y <= y_ubound) {
+    while (neighbor_tile && neighbor_tile->leftBottom.y <= y_ubound) {
+        F_Point leftTop(neighbor_tile->leftBottom.x+0.5, neighbor_tile->rightTop.y-0.5);
+        int stop_flag = 0;
+        if (neighbor_tile->rightTop.y == y_ubound) stop_flag = 1;
         Tile* next_tile = neighbor_tile->rt;
         TileDeleteRight(neighbor_tile, 1);
         neighbor_tile = next_tile;
+        if (stop_flag) { // reach the neighbor top
+            Tile* uppest_tile = this->PointFinding(leftTop, 0);
+            MergeTileUpward(uppest_tile);
+            MergeTileDownward(uppest_tile);
+            break;
+        }
     }
 }
