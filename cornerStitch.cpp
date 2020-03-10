@@ -33,7 +33,7 @@ bool CornerStitchPlane::AreaSearch(Rectangle area) {
     Tile *now_rec = this->PointFinding(leftTop, 0);
     if ( now_rec && now_rec->type ) return 0;
     if ( now_rec && now_rec->rightTop.x < area.rightTop.x ) return 0;
-    while( now_rec && now_rec->rightTop.y >= area.leftBottom.y ) {
+    while( now_rec && now_rec->rightTop.y > area.leftBottom.y ) {
         while ( now_rec->rightTop.x < area.leftBottom.x ) {
             now_rec = now_rec->tr;    
         }
